@@ -35,6 +35,8 @@ ghc-options:
 
 library:
   source-dirs: src
+  dependencies:
+    - parsec
 
 executables:
   raven-exe:
@@ -46,6 +48,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - raven
+    - parsec
 
 tests:
   raven-test:
