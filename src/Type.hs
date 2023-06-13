@@ -9,6 +9,7 @@ data Identifier = Identifier String
 
 data Element = LiteralElement Literal
              | IdentifierElement Identifier
+             | ArrayElement [Element]
              deriving (Show)
 
 data Type = IntType
@@ -16,10 +17,16 @@ data Type = IntType
           | BooleanType
           | StringType
           | FunctionType
+          | ArrayType Type
           deriving (Show)
 
 data VariableDefinition = VariableDefinitionType Type Identifier (Maybe Element)
                         | VariableAssignment Identifier Element
+                        deriving (Show)
+
+
+data ArrayDefinition = ArrayDefinitionType Type Identifier (Maybe Element)
+                        | ArrayAssignment Identifier Element
                         deriving (Show)
 
 identifierParser :: Parser Identifier
@@ -32,6 +39,12 @@ elementParser :: Parser Element
 elementParser = choice [LiteralElement <$> literalParser,
                         IdentifierElement <$> identifierParser]
 
+elementListParser :: Parser Element
+elementListParser = ArrayElement <$> arrayParser
+
+arrayParser :: Parser [Element]
+arrayParser = between (char '[' >> spaces) (spaces >> char ']') (elementParser `sepBy` (char ',' >> spaces))
+
 parseIdentifier :: String -> Either ParseError Identifier
 parseIdentifier input = parse identifierParser "" input
 
@@ -40,7 +53,8 @@ typeParser = choice [string "int" >> return IntType,
                      string "char" >> return CharType,
                      string "boolean" >> return BooleanType,
                      string "string" >> return StringType,
-                     string "function" >> return FunctionType]
+                     string "function" >> return FunctionType,
+                     ArrayType <$> (spaces >> char '[' >> spaces >> typeParser <* spaces <* char ']')]
 
 variableDefinitionParser :: Parser VariableDefinition
 variableDefinitionParser = choice [variableDefinitionTypeParser,
@@ -62,3 +76,25 @@ variableAssignmentParser = do
   spaces
   assignment <- char '=' >> spaces >> elementParser
   return (VariableAssignment varIdentifier assignment)
+
+arrayDefinitionParser :: Parser ArrayDefinition
+arrayDefinitionParser = choice [arrayDefinitionTypeParser,
+                                   arrayAssignmentParser]
+
+arrayDefinitionTypeParser :: Parser ArrayDefinition
+arrayDefinitionTypeParser = do
+  varType <- typeParser
+  spaces
+  varIdentifier <- identifierParser
+  spaces
+  assignment <- optionMaybe (char '=' >> spaces >> elementListParser)
+  _ <- char ';'
+  return (ArrayDefinitionType varType varIdentifier assignment)
+
+
+arrayAssignmentParser :: Parser ArrayDefinition
+arrayAssignmentParser = do
+  varIdentifier <- identifierParser
+  spaces
+  assignment <- char '=' >> spaces >> elementParser
+  return (ArrayAssignment varIdentifier assignment)
