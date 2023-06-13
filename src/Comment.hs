@@ -3,13 +3,13 @@ module Comment where
 import Text.Parsec
 import Text.Parsec.String (Parser)
 import Control.Applicative hiding (many, optional)
-import qualified Text.Parsec.Char as PC
-import Text.ParserCombinators.ReadP (choice)
 
 data Comment = CommentLine String
              | CommentBlock String
-             deriving Show
+             deriving (Show)
 
+commentParser :: Parser Comment
+commentParser = choice [try parseCommentLine, parseCommentBlock]
 
 parseCommentLine :: Parser Comment
 parseCommentLine = do
@@ -22,4 +22,4 @@ parseCommentBlock = do
     string "/*"
     value <- many (noneOf "*")
     string "*/"
-    return (CommentLine value)
+    return (CommentBlock value)
