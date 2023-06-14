@@ -16,30 +16,30 @@ literalParser :: Parser Literal
 literalParser = choice [integerLiteralParser, characterLiteralParser, stringLiteralParser, booleanLiteralParser]
 
 booleanLiteralParser :: Parser Literal
-booleanLiteralParser = do
-  value <- choice [string "false" >> return False, string "true" >> return True]
-  return (BooleanLiteral value)
+booleanLiteralParser =
+  choice [string "false" >> return False, string "true" >> return True] >>= \value ->
+    return (BooleanLiteral value)
 
 integerLiteralParser :: Parser Literal
-integerLiteralParser = do
-  negative <- option False (char '-' >> return True)
-  digits <- many1 digit
-  let value = read digits :: Integer
-  return (if negative then IntegerLiteral (-value) else IntegerLiteral value)
+integerLiteralParser =
+  option False (char '-' >> return True) >>= \negative ->
+    many1 digit >>= \digits ->
+      let value = read digits :: Integer
+      in return (if negative then IntegerLiteral (-value) else IntegerLiteral value)
 
 characterLiteralParser :: Parser Literal
-characterLiteralParser = do
-  char '\''
-  value <- PC.letter <|> digit
-  char '\''
-  return (CharacterLiteral value)
+characterLiteralParser =
+  char '\'' >>
+    (PC.letter <|> digit) >>= \value ->
+      char '\'' >>
+        return (CharacterLiteral value)
 
 stringLiteralParser :: Parser Literal
-stringLiteralParser = do
-  char '"'
-  value <- many (noneOf "\"")
-  char '"'
-  return (StringLiteral value)
+stringLiteralParser =
+  char '"' >>
+    many (noneOf "\"") >>= \value ->
+      char '"' >>
+        return (StringLiteral value)
 
 -- Small Parsers
 digitParser :: Parser Char
