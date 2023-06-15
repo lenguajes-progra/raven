@@ -2,24 +2,17 @@ module Comment where
 
 import Text.Parsec
 import Text.Parsec.String (Parser)
-import Control.Applicative hiding (many, optional)
+import Control.Applicative hiding (many, optional, (<|>))
 
 data Comment = CommentLine String
              | CommentBlock String
              deriving (Show)
 
 commentParser :: Parser Comment
-commentParser = choice [try parseCommentLine, parseCommentBlock]
+commentParser = try parseCommentLine <|> parseCommentBlock
 
 parseCommentLine :: Parser Comment
-parseCommentLine = do
-    string "//"
-    value <- manyTill (noneOf "\n") eof
-    return (CommentLine value)
+parseCommentLine = CommentLine <$> (string "//" *> manyTill (noneOf "\n") eof)
 
 parseCommentBlock :: Parser Comment
-parseCommentBlock = do
-    string "/*"
-    value <- many (noneOf "*")
-    string "*/"
-    return (CommentBlock value)
+parseCommentBlock = CommentBlock <$> (string "/*" *> many (noneOf "*") <* string "*/")
