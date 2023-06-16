@@ -24,20 +24,16 @@ data VariableDefinition = VariableDefinitionType Type Identifier (Maybe Element)
                         | VariableAssignment Identifier Element
                         deriving (Show)
 
-
 data ArrayDefinition = ArrayDefinitionType Type Identifier (Maybe Element)
                         | ArrayAssignment Identifier Element
                         deriving (Show)
 
 identifierParser :: Parser Identifier
-identifierParser = do
-  first <- letter
-  rest <- many (letter <|> digit <|> char '_')
-  return (Identifier (first:rest))
+identifierParser = Identifier <$> ((:) <$> letter <*> many (letter <|> digit <|> char '_'))
 
 elementParser :: Parser Element
-elementParser = choice [LiteralElement <$> literalParser,
-                        IdentifierElement <$> identifierParser]
+elementParser = LiteralElement <$> literalParser
+             <|>IdentifierElement <$> identifierParser
 
 elementListParser :: Parser Element
 elementListParser = ArrayElement <$> arrayParser
@@ -45,37 +41,29 @@ elementListParser = ArrayElement <$> arrayParser
 arrayParser :: Parser [Element]
 arrayParser = between (char '[' >> spaces) (spaces >> char ']') (elementParser `sepBy` (char ',' >> spaces))
 
-parseIdentifier :: String -> Either ParseError Identifier
-parseIdentifier input = parse identifierParser "" input
-
 typeParser :: Parser Type
-typeParser = choice [string "int" >> return IntType,
-                     string "char" >> return CharType,
-                     string "boolean" >> return BooleanType,
-                     string "string" >> return StringType,
-                     string "function" >> return FunctionType,
-                     ArrayType <$> (spaces >> char '[' >> spaces >> typeParser <* spaces <* char ']')]
+typeParser = string "int" *> pure IntType
+         <|> string "char" *> pure CharType
+         <|> string "boolean" *> pure BooleanType
+         <|> string "string" *> pure StringType
+         <|> string "function" *> pure FunctionType
+         <|> ArrayType <$> (spaces *> char '[' >> spaces >> typeParser <* spaces <* char ']')
 
 variableDefinitionParser :: Parser VariableDefinition
-variableDefinitionParser = choice [variableDefinitionTypeParser,
-                                   variableAssignmentParser]
+variableDefinitionParser = variableDefinitionTypeParser
+                        <|> variableAssignmentParser
 
 variableDefinitionTypeParser :: Parser VariableDefinition
-variableDefinitionTypeParser = do
-  varType <- typeParser
-  spaces
-  varIdentifier <- identifierParser
-  spaces
-  assignment <- optionMaybe (char '=' >> spaces >> elementParser)
-  _ <- char ';'
-  return (VariableDefinitionType varType varIdentifier assignment)
+variableDefinitionTypeParser = VariableDefinitionType
+        <$> typeParser <* spaces
+        <*> identifierParser <* spaces
+        <*> optionMaybe (char '=' *> spaces *> elementParser)
+        <* char ';'
 
 variableAssignmentParser :: Parser VariableDefinition
-variableAssignmentParser = do
-  varIdentifier <- identifierParser
-  spaces
-  assignment <- char '=' >> spaces >> elementParser
-  return (VariableAssignment varIdentifier assignment)
+variableAssignmentParser = VariableAssignment
+        <$> identifierParser <* spaces
+        <*> (char '=' *> spaces *> elementParser)
 
 arrayDefinitionParser :: Parser ArrayDefinition
 arrayDefinitionParser = choice [arrayDefinitionTypeParser,
