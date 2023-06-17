@@ -36,24 +36,24 @@ identifierParser :: Parser Identifier
 identifierParser = Identifier <$> ((:) <$> letter <*> many (letter <|> digit <|> char '_'))
 
 elementParser :: Parser Element
-elementParser = LiteralElement <$> literalParser
-             <|>IdentifierElement <$> identifierParser
+elementParser = try (LiteralElement <$> literalParser)
+             <|>try (IdentifierElement <$> identifierParser)
 
 elementListParser :: Parser ElementList
 elementListParser = Literals <$> (char '[' *> spaces *> literalParser `sepBy` (char ',' *> spaces) <* spaces <* char ']')
 
 typeParser :: Parser Type
-typeParser = string "int" *> pure IntType
-         <|> string "char" *> pure CharType
-         <|> string "boolean" *> pure BooleanType
-         <|> string "string" *> pure StringType
-         <|> string "function" *> pure FunctionType
-         <|> ArrayType <$> (spaces *> char '[' >> spaces >> typeParser <* spaces <* char ']')
+typeParser = try (string "int" *> pure IntType)
+         <|> try (string "char" *> pure CharType)
+         <|> try (string "boolean" *> pure BooleanType)
+         <|> try (string "string" *> pure StringType)
+         <|> try (string "function" *> pure FunctionType)
+         <|> try (ArrayType <$> (spaces *> char '[' >> spaces >> typeParser <* spaces <* char ']'))
 
 variableDefinitionParser :: Parser VariableDefinition
-variableDefinitionParser = variableDefinitionCompleteParser
-                        <|> variableDefinitionWithoutAssignmentParser
-                        <|> variableDefinitionWithAssignmentParser
+variableDefinitionParser = try variableDefinitionCompleteParser
+                        <|> try variableDefinitionWithoutAssignmentParser
+                        <|> try variableDefinitionWithAssignmentParser
 
 variableDefinitionCompleteParser :: Parser VariableDefinition
 variableDefinitionCompleteParser = VariableDefinitionComplete
@@ -80,13 +80,13 @@ arrayDefinitionParser = try arrayDefinitionCompleteParser
 
 arrayDefinitionCompleteParser :: Parser ArrayDefinition
 arrayDefinitionCompleteParser = ArrayDefinitionComplete
-        <$> (char '[' *> spaces *> typeParser <* spaces <* char ']' <* spaces)
+        <$> typeParser <* spaces
         <*> identifierParser <* spaces
         <*> (char '=' *> spaces *> ((Left <$> string "error") <|> (Right <$> elementListParser)))
 
 arrayDefinitionWithoutAssignmentParser :: Parser ArrayDefinition
 arrayDefinitionWithoutAssignmentParser = ArrayDefinitionWithoutAssignment
-              <$> (char '[' *> spaces *> typeParser <* spaces <* char ']' <* spaces)
+              <$> typeParser <* spaces
               <*> identifierParser <* char ';'
 
 arrayDefinitionWithAssignmentParser :: Parser ArrayDefinition

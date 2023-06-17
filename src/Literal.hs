@@ -10,14 +10,14 @@ data Literal = IntegerLiteral Integer
              deriving (Show)
 
 literalParser :: Parser Literal
-literalParser = integerLiteralParser
-            <|> characterLiteralParser
-            <|> stringLiteralParser
-            <|> booleanLiteralParser
+literalParser = try integerLiteralParser
+            <|> try characterLiteralParser
+            <|> try stringLiteralParser
+            <|> try booleanLiteralParser
 
 booleanLiteralParser :: Parser Literal
-booleanLiteralParser = string "false" *> pure (BooleanLiteral False)
-                    <|> string "true" *> pure (BooleanLiteral True)
+booleanLiteralParser = try (string "false" *> pure (BooleanLiteral False))
+                    <|> try (string "true" *> pure (BooleanLiteral True))
 
 integerLiteralParser :: Parser Literal
 integerLiteralParser = IntegerLiteral . read <$> ((:) <$> (digit <|> char '-') <*> many digit)
