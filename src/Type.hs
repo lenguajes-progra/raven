@@ -1,7 +1,7 @@
 module Type where
 
 import Text.Parsec
-import Text.Parsec.String (Parser)
+import Text.Parsec.String
 import Literal
 
 data Identifier = Identifier String
@@ -20,13 +20,14 @@ data Type = IntType
           | ArrayType Type
           deriving (Show)
 
-data VariableDefinition = VariableDefinitionType Type Identifier (Maybe Element)
-                        | VariableAssignment Identifier Element
-                        deriving (Show)
+data VariableDefinition = VariableDefinitionComplete Type Identifier (Either String Literal)
+                         | VariableDefinitionWithoutAssignment Type Identifier
+                         | VariableDefinitionWithAssignment Identifier Literal
+                         deriving (Show)
 
 data ArrayDefinition = ArrayDefinitionType Type Identifier (Maybe Element)
-                        | ArrayAssignment Identifier Element
-                        deriving (Show)
+                     | ArrayAssignment Identifier Element
+                     deriving (Show)
 
 identifierParser :: Parser Identifier
 identifierParser = Identifier <$> ((:) <$> letter <*> many (letter <|> digit <|> char '_'))
@@ -50,20 +51,27 @@ typeParser = string "int" *> pure IntType
          <|> ArrayType <$> (spaces *> char '[' >> spaces >> typeParser <* spaces <* char ']')
 
 variableDefinitionParser :: Parser VariableDefinition
-variableDefinitionParser = variableDefinitionTypeParser
-                        <|> variableAssignmentParser
+variableDefinitionParser = variableDefinitionCompleteParser
+                        <|> variableDefinitionWithoutAssignmentParser
+                        <|> variableDefinitionWithAssignmentParser
 
-variableDefinitionTypeParser :: Parser VariableDefinition
-variableDefinitionTypeParser = VariableDefinitionType
+variableDefinitionCompleteParser :: Parser VariableDefinition
+variableDefinitionCompleteParser = VariableDefinitionComplete
         <$> typeParser <* spaces
         <*> identifierParser <* spaces
-        <*> optionMaybe (char '=' *> spaces *> elementParser)
+        <*> (char '=' *> spaces *> ((Left <$> string "error") <|> (Right <$> literalParser)))
         <* char ';'
 
-variableAssignmentParser :: Parser VariableDefinition
-variableAssignmentParser = VariableAssignment
+variableDefinitionWithoutAssignmentParser :: Parser VariableDefinition
+variableDefinitionWithoutAssignmentParser = VariableDefinitionWithoutAssignment
+              <$> typeParser <* spaces
+              <*> identifierParser <* char ';'
+
+variableDefinitionWithAssignmentParser :: Parser VariableDefinition
+variableDefinitionWithAssignmentParser = VariableDefinitionWithAssignment
         <$> identifierParser <* spaces
-        <*> (char '=' *> spaces *> elementParser)
+        <*> (char '=' *> spaces *> literalParser)
+        <* char ';'
 
 arrayDefinitionParser :: Parser ArrayDefinition
 arrayDefinitionParser = choice [arrayDefinitionTypeParser,
@@ -85,4 +93,5 @@ arrayAssignmentParser = do
   varIdentifier <- identifierParser
   spaces
   assignment <- char '=' >> spaces >> elementParser
+  _ <- char ';'
   return (ArrayAssignment varIdentifier assignment)
