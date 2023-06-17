@@ -1,4 +1,4 @@
-module Error where
+module Error(Error(ErrorType), ErrorType(Syntax, Type, FunctionType, AssignType)) where
 
 import Text.Parsec
 import Text.Parsec.String (Parser)
