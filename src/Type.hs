@@ -32,6 +32,12 @@ data ArrayDefinition = ArrayDefinitionComplete Type Identifier (Either String El
                      | ArrayDefinitionWithAssignment Identifier ElementList
                      deriving (Show)
 
+data Parameters = Parameters [(Type, Identifier)]
+                deriving (Show)
+
+-- data FunctionDefinition = FuncDefinition Type Identifier Parameters Block Expression
+--                         deriving (Show)
+
 identifierParser :: Parser Identifier
 identifierParser = Identifier <$> ((:) <$> letter <*> many (letter <|> digit <|> char '_'))
 
@@ -94,3 +100,9 @@ arrayDefinitionWithAssignmentParser = ArrayDefinitionWithAssignment
         <$> identifierParser <* spaces
         <*> (char '=' *> spaces *> elementListParser)
         <* char ';'
+
+parameterParser :: Parser (Type, Identifier)
+parameterParser = (,) <$> typeParser <* spaces <*> identifierParser
+
+parametersParser :: Parser Parameters
+parametersParser = Parameters <$> parameterParser `sepBy` (char ',' *> spaces)
