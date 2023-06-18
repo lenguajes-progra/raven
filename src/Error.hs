@@ -19,13 +19,13 @@ errorTypeParser :: Parser ErrorType
 errorTypeParser = syntaxError <|> typeError <|> functionTypeError <|> assignTypeError
 
 syntaxError :: Parser ErrorType
-syntaxError = Syntax <$ string "Syntax" <* many1 space <* string "error" <* many1 space
+syntaxError = Syntax <$ string "Syntax" <* many1 space <* string "error" <* (many space <|> string ";")
 
 typeError :: Parser ErrorType
-typeError = Type <$ string "Type" <* many1 space <* string "error" <* many1 space
+typeError = Type <$ string "Type" <* many1 space <* string "error" <* (many space <|> string ";")
 
 functionTypeError :: Parser ErrorType
-functionTypeError = TypeFunction <$ string "Function Type" <* many1 space <* string "error" <* many1 space
+functionTypeError = TypeFunction <$ string "Function Type" <* many1 space <* string "error" <* (many space <|> string ";")
 
 assignTypeError :: Parser ErrorType
-assignTypeError = AssignType <$ string "Assign Type" <* many1 space <* string "error" <* many1 space
+assignTypeError = AssignType <$ string "Assign Type" <* many1 space <* string "error" <* (many space <|> string ";")
