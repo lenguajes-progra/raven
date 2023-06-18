@@ -25,7 +25,7 @@ typeError :: Parser ErrorType
 typeError = Type <$ string "Type" <* many1 space <* string "error" <* many1 space
 
 functionTypeError :: Parser ErrorType
-functionTypeError = FunctionType <$ string "Function Type" <* many1 space <* string "error" <* many1 space
+functionTypeError = TypeFunction <$ string "Function Type" <* many1 space <* string "error" <* many1 space
 
 assignTypeError :: Parser ErrorType
 assignTypeError = AssignType <$ string "Assign Type" <* many1 space <* string "error" <* many1 space
