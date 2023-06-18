@@ -1,13 +1,8 @@
 module Comment where
 
-import Error
+import Grammar
 import Text.Parsec
-import Text.Parsec.String (Parser)
-import Control.Applicative hiding (many, optional, (<|>))
-
-data Comment = CommentLine String
-             | CommentBlock String
-             deriving (Show)
+import Text.Parsec.String
 
 commentParser :: String -> Either Error Comment
 commentParser input = case parse commentParser' "" input of

@@ -1,16 +1,8 @@
-module Error (Error (ErrorType), ErrorType (Syntax, Type, TypeFunction, AssignType), errorParser) where
+module Error where
 
-import Control.Applicative hiding (many, optional, (<|>))
+import Grammar
 import Text.Parsec
 import Text.Parsec.String (Parser)
-
-data Error = ErrorType ErrorType deriving (Show)
-
-data ErrorType = Syntax
-               | Type
-               | TypeFunction
-               | AssignType
-               deriving (Show)
 
 errorParser :: Parser Error
 errorParser = ErrorType <$> errorTypeParser

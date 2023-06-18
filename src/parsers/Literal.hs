@@ -2,12 +2,8 @@ module Literal where
 
 import Text.Parsec
 import Text.Parsec.String
+import Grammar
 
-data Literal = IntegerLiteral Integer
-             | CharacterLiteral Char
-             | StringLiteral String
-             | BooleanLiteral Bool
-             deriving (Show)
 
 literalParser :: Parser Literal
 literalParser = try integerLiteralParser

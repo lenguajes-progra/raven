@@ -25,10 +25,12 @@ source-repository head
 
 library
   exposed-modules:
+      Grammar
+      Lib
       Comment
       Error
       Expression
-      Lib
+      If
       Literal
       Parsers
       PrintStatement
@@ -37,6 +39,7 @@ library
       Paths_raven
   hs-source-dirs:
       src
+      src/parsers
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
