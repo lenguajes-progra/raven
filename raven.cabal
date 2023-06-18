@@ -27,9 +27,11 @@ library
   exposed-modules:
       Comment
       Error
+      Expression
       Lib
       Literal
       Parsers
+      PrintStatement
       Type
   other-modules:
       Paths_raven
