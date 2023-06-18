@@ -1,16 +1,19 @@
 module Type where
 
 import Text.Parsec
-import Text.Parsec.String (Parser)
+import Text.Parsec.String
 import Literal
+import Error
 
 data Identifier = Identifier String
                 deriving (Show)
 
 data Element = LiteralElement Literal
              | IdentifierElement Identifier
-             | ArrayElement [Element]
              deriving (Show)
+
+data ElementList = Literals [Literal]
+                deriving (Show)
 
 data Type = IntType
           | CharType
@@ -20,69 +23,91 @@ data Type = IntType
           | ArrayType Type
           deriving (Show)
 
-data VariableDefinition = VariableDefinitionType Type Identifier (Maybe Element)
-                        | VariableAssignment Identifier Element
-                        deriving (Show)
+data VariableDefinition = VariableDefinitionComplete Type Identifier (Either Error Literal)
+                         | VariableDefinitionWithoutAssignment Type Identifier
+                         | VariableDefinitionWithAssignment Identifier Literal
+                         deriving (Show)
 
-data ArrayDefinition = ArrayDefinitionType Type Identifier (Maybe Element)
-                        | ArrayAssignment Identifier Element
-                        deriving (Show)
+data ArrayDefinition = ArrayDefinitionComplete Type Identifier (Either Error ElementList)
+                     | ArrayDefinitionWithoutAssignment Type Identifier
+                     | ArrayDefinitionWithAssignment Identifier ElementList
+                     deriving (Show)
 
 identifierParser :: Parser Identifier
 identifierParser = Identifier <$> ((:) <$> letter <*> many (letter <|> digit <|> char '_'))
 
 elementParser :: Parser Element
-elementParser = LiteralElement <$> literalParser
-             <|>IdentifierElement <$> identifierParser
+elementParser = try (LiteralElement <$> literalParser)
+             <|>try (IdentifierElement <$> identifierParser)
 
-elementListParser :: Parser Element
-elementListParser = ArrayElement <$> arrayParser
-
-arrayParser :: Parser [Element]
-arrayParser = between (char '[' >> spaces) (spaces >> char ']') (elementParser `sepBy` (char ',' >> spaces))
+elementListParser :: Parser ElementList
+elementListParser = Literals <$> (char '[' *> spaces *> literalParser `sepBy` (char ',' *> spaces) <* spaces <* char ']')
 
 typeParser :: Parser Type
-typeParser = string "int" *> pure IntType
-         <|> string "char" *> pure CharType
-         <|> string "boolean" *> pure BooleanType
-         <|> string "string" *> pure StringType
-         <|> string "function" *> pure FunctionType
-         <|> ArrayType <$> (spaces *> char '[' >> spaces >> typeParser <* spaces <* char ']')
+typeParser = try (string "int" *> pure IntType)
+         <|> try (string "char" *> pure CharType)
+         <|> try (string "boolean" *> pure BooleanType)
+         <|> try (string "string" *> pure StringType)
+         <|> try (string "function" *> pure FunctionType)
+         <|> try (ArrayType <$> (spaces *> char '[' >> spaces >> typeParser <* spaces <* char ']'))
 
 variableDefinitionParser :: Parser VariableDefinition
-variableDefinitionParser = variableDefinitionTypeParser
-                        <|> variableAssignmentParser
+variableDefinitionParser = try variableDefinitionCompleteParser
+                        <|> try variableDefinitionWithoutAssignmentParser
+                        <|> try variableDefinitionWithAssignmentParser
 
-variableDefinitionTypeParser :: Parser VariableDefinition
-variableDefinitionTypeParser = VariableDefinitionType
+variableDefinitionCompleteParser :: Parser VariableDefinition
+variableDefinitionCompleteParser = VariableDefinitionComplete
         <$> typeParser <* spaces
         <*> identifierParser <* spaces
-        <*> optionMaybe (char '=' *> spaces *> elementParser)
+        <*> (char '=' *> spaces *> ((Left <$> errorParser) <|> (Right <$> literalParser)))
         <* char ';'
 
-variableAssignmentParser :: Parser VariableDefinition
-variableAssignmentParser = VariableAssignment
+literalParserMatchesType :: Type -> Parser (Either Error Literal)
+literalParserMatchesType tp =
+    literalParser >>= \literal ->
+    if literalMatchesType tp literal
+        then return (Right literal)
+        else return (Left (ErrorType Type))
+
+
+literalMatchesType :: Type -> Literal -> Bool
+literalMatchesType tp literal = case (tp, literal) of
+    (IntType, IntegerLiteral _) -> True
+    (CharType, CharacterLiteral _) -> True
+    (BooleanType, BooleanLiteral _) -> True
+    (StringType, StringLiteral _) -> True
+    _ -> False
+
+variableDefinitionWithoutAssignmentParser :: Parser VariableDefinition
+variableDefinitionWithoutAssignmentParser = VariableDefinitionWithoutAssignment
+              <$> typeParser <* spaces
+              <*> identifierParser <* char ';'
+
+variableDefinitionWithAssignmentParser :: Parser VariableDefinition
+variableDefinitionWithAssignmentParser = VariableDefinitionWithAssignment
         <$> identifierParser <* spaces
-        <*> (char '=' *> spaces *> elementParser)
+        <*> (char '=' *> spaces *> literalParser)
+        <* char ';'
 
 arrayDefinitionParser :: Parser ArrayDefinition
-arrayDefinitionParser = choice [arrayDefinitionTypeParser,
-                                   arrayAssignmentParser]
+arrayDefinitionParser = try arrayDefinitionCompleteParser
+                    <|> try arrayDefinitionWithoutAssignmentParser
+                    <|> try arrayDefinitionWithAssignmentParser
 
-arrayDefinitionTypeParser :: Parser ArrayDefinition
-arrayDefinitionTypeParser = do
-  varType <- typeParser
-  spaces
-  varIdentifier <- identifierParser
-  spaces
-  assignment <- optionMaybe (char '=' >> spaces >> elementListParser)
-  _ <- char ';'
-  return (ArrayDefinitionType varType varIdentifier assignment)
+arrayDefinitionCompleteParser :: Parser ArrayDefinition
+arrayDefinitionCompleteParser = ArrayDefinitionComplete
+        <$> typeParser <* spaces
+        <*> identifierParser <* spaces
+        <*> (char '=' *> spaces *> (try (Left <$> errorParser) <|> (Right <$> elementListParser)))
 
+arrayDefinitionWithoutAssignmentParser :: Parser ArrayDefinition
+arrayDefinitionWithoutAssignmentParser = ArrayDefinitionWithoutAssignment
+              <$> typeParser <* spaces
+              <*> identifierParser <* char ';'
 
-arrayAssignmentParser :: Parser ArrayDefinition
-arrayAssignmentParser = do
-  varIdentifier <- identifierParser
-  spaces
-  assignment <- char '=' >> spaces >> elementParser
-  return (ArrayAssignment varIdentifier assignment)
+arrayDefinitionWithAssignmentParser :: Parser ArrayDefinition
+arrayDefinitionWithAssignmentParser = ArrayDefinitionWithAssignment
+        <$> identifierParser <* spaces
+        <*> (char '=' *> spaces *> elementListParser)
+        <* char ';'
