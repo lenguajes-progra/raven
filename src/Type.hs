@@ -57,15 +57,14 @@ variableDefinitionParser = try variableDefinitionCompleteParser
                         <|> try variableDefinitionWithAssignmentParser
 
 variableDefinitionCompleteParser :: Parser VariableDefinition
-variableDefinitionCompleteParser = do
-    t <- typeParser
-    spaces
-    identifier <- identifierParser
-    spaces
-    literal <- char '=' *> spaces *> (try (literalParserMatchesType t) <|> (Left <$> errorParser))
-    char ';'
+variableDefinitionCompleteParser =
+    typeParser >>= \t ->
+    spaces >>
+    identifierParser >>= \identifier ->
+    spaces >>
+    (char '=' *> spaces *> (try (literalParserMatchesType t) <|> (Left <$> errorParser))) >>= \literal ->
+    char ';' >>
     return (VariableDefinitionComplete t identifier literal)
-
 
 literalParserMatchesType :: Type -> Parser (Either Error Literal)
 literalParserMatchesType tp =
@@ -73,7 +72,6 @@ literalParserMatchesType tp =
     if literalMatchesType tp literal
         then return (Right literal)
         else return (Left (ErrorType AssignType))
-
 
 literalMatchesType :: Type -> Literal -> Bool
 literalMatchesType tp literal = case (tp, literal) of
@@ -100,11 +98,13 @@ arrayDefinitionParser = try arrayDefinitionCompleteParser
                     <|> try arrayDefinitionWithAssignmentParser
 
 arrayDefinitionCompleteParser :: Parser ArrayDefinition
-arrayDefinitionCompleteParser = do
-  dataType <- typeParser <* spaces
-  identifier <- identifierParser <* spaces
-  errorOrElements <- char '=' *> spaces *> (try (elementListParserMatchesType dataType) <|> (Left <$> errorParser))
-  return (ArrayDefinitionComplete dataType identifier errorOrElements)
+arrayDefinitionCompleteParser =
+    typeParser >>= \dataType ->
+    spaces >>
+    identifierParser >>= \identifier ->
+    spaces >>
+    (char '=' *> spaces *> (try (elementListParserMatchesType dataType) <|> (Left <$> errorParser))) >>= \errorOrElements ->
+    return (ArrayDefinitionComplete dataType identifier errorOrElements)
 
 elementListParserMatchesType :: Type -> Parser (Either Error ElementList)
 elementListParserMatchesType tp =
