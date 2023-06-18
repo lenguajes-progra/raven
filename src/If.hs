@@ -2,21 +2,17 @@ module If where
 
 import Text.Parsec
 import Text.Parsec.String (Parser)
-import Text.Parsec.Char (string, char, letter, digit, spaces)
-import Text.Parsec.Expr (buildExpressionParser, Operator(..))
-import Control.Applicative ((<|>))
+import Expression (Expression, parseExpression)
 
-data Expression = -- Define your Expression data type here
+data IfStatement = IfStatement Expression Block Block deriving (Show)
 
-data Block = -- Define your Block data type here
-
-data IfStatement = IfStatement Expression Block Block
+type Block = String 
 
 ifStatementParser :: Parser IfStatement
 ifStatementParser =
   IfStatement
-    <$> (string "if" *> spaces *> char '(' *> expressionParser <* char ')')
-    <*> (spaces *> blockParser)
-    <*> (spaces *> string "else" *> spaces *> blockParser)
+    <$> (string "if" *> spaces *> char '(' *> parseExpression <* char ')')
+    <*> (spaces *> string "block")
+    <*> (spaces *> string "else" *> spaces *> string "block")
     <* spaces
     <* string "end"
