@@ -1,12 +1,12 @@
-module Type where
+module Type (Identifier (..), identifierParser) where
 
 import Text.Parsec
 import Text.Parsec.String
 import Literal
-import Error
+import Error ( errorParser, ErrorType(Type), Error(..) )
 
-data Identifier = Identifier String
-                deriving (Show)
+data Identifier = Ident String
+  deriving (Show)
 
 data Element = LiteralElement Literal
              | IdentifierElement Identifier
@@ -34,7 +34,7 @@ data ArrayDefinition = ArrayDefinitionComplete Type Identifier (Either Error Ele
                      deriving (Show)
 
 identifierParser :: Parser Identifier
-identifierParser = Identifier <$> ((:) <$> letter <*> many (letter <|> digit <|> char '_'))
+identifierParser = Ident <$> ((:) <$> letter <*> many (letter <|> digit <|> char '_'))
 
 elementParser :: Parser Element
 elementParser = try (LiteralElement <$> literalParser)
