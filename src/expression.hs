@@ -1,34 +1,42 @@
 module Expression where
 
 import Control.Applicative ((<|>))
-import Data.Functor (($>), (<&>))
+import Data.Functor (($>))
 import Literal (Literal (..), literalParser)
 import Parsers
-import Text.Parsec (char, choice, many, space, spaces, string, try)
+import Text.Parsec (many, space, string, try)
 import Text.Parsec.String
 import Type (Identifier (..), identifierParser)
 
-data Expression = Literal Literal | Identifier Identifier | NumericExpression NumericExpression deriving (Show)
+data Expression
+  = Literal Literal
+  | Identifier Identifier
+  | NumericExpression NumericExpression
+  | LogicalExpression LogicalExpression
+  | BitExpression BitExpression
+  deriving (Show)
 
 data LogicalExpression
-  = Not Expression
-  | LogicalOperator Expression Expression
+  = LogicNot LogicalOperator Expression
+  | LogExpr Expression LogicalOperator Expression
   deriving (Show)
 
 data BitExpression
-  = NotBit Expression
-  | BitOperator Expression Expression
+  = BitNot BitOperator Expression
+  | BitExpr Expression BitOperator Expression
   deriving (Show)
 
 data NumericExpression
-  = NumericOp Expression NumericOperator Expression
+  = NumExpr Expression NumericOperator Expression
   deriving (Show)
 
-data LogicalOperator = And | Or deriving (Show)
+data LogicalOperator = And | Or | Not deriving (Show)
 
-data BitOperator = AndBit | OrBit | XorBit | RightShift | LeftShift deriving (Show)
+data BitOperator = AndBit | OrBit | XorBit | RightShift | LeftShift | NotBit deriving (Show)
 
 data NumericOperator = Equal | NotEqual | LessThan | GreaterThan | LessEqualThan | GreatEqualThan deriving (Show)
+
+-- INFO: Numeric Expression
 
 parseEqual :: Parser NumericOperator
 parseEqual = many space >> string "==" *> many space $> Equal
@@ -55,9 +63,9 @@ parseLiteralOrIdentifier :: Parser Expression
 parseLiteralOrIdentifier = Identifier <$> try identifierParser <|> Literal <$> try literalParser
 
 parseNumericExpression :: Parser NumericExpression
--- parseNumericExpression = parseLiteralOrIdentifier >>= (\x -> parseNumericOperator >>= (\y -> parseLiteralOrIdentifier >>= (\z -> return $ NumericOp x y z)))
--- parseNumericExpression = parseLiteralOrIdentifier >>= (\x -> parseNumericOperator >>= (\y -> parseLiteralOrIdentifier <&> NumericOp x y))
-parseNumericExpression = NumericOp <$> parseLiteralOrIdentifier <*> parseNumericOperator <*> parseLiteralOrIdentifier
+parseNumericExpression = NumExpr <$> parseLiteralOrIdentifier <*> parseNumericOperator <*> parseLiteralOrIdentifier
+
+-- INFO: Bit Expression
 
 parseAndBit :: Parser BitOperator
 parseAndBit = many space >> string "&" *> many space $> AndBit
@@ -74,9 +82,39 @@ parseRightShiftBit = many space >> string ">>" *> many space $> RightShift
 parseLeftShiftBit :: Parser BitOperator
 parseLeftShiftBit = many space >> string "<<" *> many space $> LeftShift
 
+parseNotBit :: Parser BitOperator
+parseNotBit = many space >> string "~" *> many space $> NotBit
+
 parseBitOperator :: Parser BitOperator
-parseBitOperator = try parseAndBit <|> try parseOrBit <|> try parseXorBit <|> try parseRightShiftBit <|> try parseLeftShiftBit
+parseBitOperator = try parseAndBit <|> try parseOrBit <|> try parseXorBit <|> try parseRightShiftBit <|> try parseLeftShiftBit <|> parseNotBit
 
-example = Ident "hello"
+parseBitExpression :: Parser BitExpression
+parseBitExpression =
+  BitExpr <$> parseLiteralOrIdentifier <*> parseBitOperator <*> parseLiteralOrIdentifier
+    <|> BitNot <$> parseBitOperator <*> parseLiteralOrIdentifier
 
-example2 = Identifier (Ident "hello")
+-- INFO: Logical Expression
+
+parseAnd :: Parser LogicalOperator
+parseAnd = many space >> string "&&" *> many space $> And
+
+parseOr :: Parser LogicalOperator
+parseOr = many space >> string "||" *> many space $> Or
+
+parseNot :: Parser LogicalOperator
+parseNot = many space >> string "!" *> many space $> Not
+
+parseLogicalOperator :: Parser LogicalOperator
+parseLogicalOperator = try parseAnd <|> try parseOr <|> try parseNot
+
+parseLogicalExpression :: Parser LogicalExpression
+parseLogicalExpression =
+  LogExpr <$> parseLiteralOrIdentifier <*> parseLogicalOperator <*> parseLiteralOrIdentifier
+    <|> LogicNot <$> parseLogicalOperator <*> parseLiteralOrIdentifier
+
+parseExpression :: Parser Expression
+parseExpression =
+  NumericExpression <$> try parseNumericExpression
+    <|> LogicalExpression <$> try parseLogicalExpression
+    <|> BitExpression <$> try parseBitExpression
+    <|> try parseLiteralOrIdentifier
