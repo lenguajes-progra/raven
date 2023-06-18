@@ -1,41 +1,12 @@
 module Expression where
 
-import Control.Applicative ((<|>))
-import Data.Functor (void, ($>))
-import Literal (Literal (..), literalParser)
+import Data.Functor (($>))
+import Grammar
+import Literal
 import Parsers
-import Text.Parsec (char, many, oneOf, space, string, try)
+import Text.Parsec
 import Text.Parsec.String
-import Type (Identifier (..), identifierParser)
-
-data Expression
-  = Literal Literal
-  | Identifier Identifier
-  | NumericExpression NumericExpression
-  | LogicalExpression LogicalExpression
-  | BitExpression BitExpression
-  | Parens Expression
-  deriving (Show)
-
-data LogicalExpression
-  = LogicNot LogicalOperator Expression
-  | LogExpr Expression LogicalOperator Expression
-  deriving (Show)
-
-data BitExpression
-  = BitNot BitOperator Expression
-  | BitExpr Expression BitOperator Expression
-  deriving (Show)
-
-data NumericExpression
-  = NumExpr Expression NumericOperator Expression
-  deriving (Show)
-
-data LogicalOperator = And | Or | Not deriving (Show)
-
-data BitOperator = AndBit | OrBit | XorBit | RightShift | LeftShift | NotBit deriving (Show)
-
-data NumericOperator = Equal | NotEqual | LessThan | GreaterThan | LessEqualThan | GreatEqualThan deriving (Show)
+import Type 
 
 parseFromTo :: String -> a -> Parser a
 parseFromTo s a = many space >> string s *> many space $> a

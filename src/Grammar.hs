@@ -1,41 +1,46 @@
 module Grammar where
 
-data Literal = IntegerLiteral Integer
-             | CharacterLiteral Char
-             | StringLiteral String
-             | BooleanLiteral Bool
-             deriving (Show)
+data Literal
+  = IntegerLiteral Integer
+  | CharacterLiteral Char
+  | StringLiteral String
+  | BooleanLiteral Bool
+  deriving (Show)
 
 data Identifier = Ident String
   deriving (Show)
 
-data Element = LiteralElement Literal
-             | IdentifierElement Identifier
-             deriving (Show)
+data Element
+  = LiteralElement Literal
+  | IdentifierElement Identifier
+  deriving (Show)
 
 data ElementList = Literals [Literal]
-                deriving (Show)
+  deriving (Show)
 
-data Type = IntType
-          | CharType
-          | BooleanType
-          | StringType
-          | FunctionType
-          | ArrayType Type
-          deriving (Show)
+data Type
+  = IntType
+  | CharType
+  | BooleanType
+  | StringType
+  | FunctionType
+  | ArrayType Type
+  deriving (Show)
 
-data VariableDefinition = VariableDefinitionComplete Type Identifier (Either Error Literal)
-                         | VariableDefinitionWithoutAssignment Type Identifier
-                         | VariableDefinitionWithAssignment Identifier Literal
-                         deriving (Show)
+data VariableDefinition
+  = VariableDefinitionComplete Type Identifier (Either Error Literal)
+  | VariableDefinitionWithoutAssignment Type Identifier
+  | VariableDefinitionWithAssignment Identifier Literal
+  deriving (Show)
 
-data ArrayDefinition = ArrayDefinitionComplete Type Identifier (Either Error ElementList)
-                     | ArrayDefinitionWithoutAssignment Type Identifier
-                     | ArrayDefinitionWithAssignment Identifier ElementList
-                     deriving (Show)
+data ArrayDefinition
+  = ArrayDefinitionComplete Type Identifier (Either Error ElementList)
+  | ArrayDefinitionWithoutAssignment Type Identifier
+  | ArrayDefinitionWithAssignment Identifier ElementList
+  deriving (Show)
 
 data PrintStatement = PrintStatement Literal
-                    deriving (Show)
+  deriving (Show)
 
 data IfStatement = IfStatement Expression Block Block deriving (Show)
 
@@ -70,14 +75,16 @@ data NumericOperator = Equal | NotEqual | LessThan | GreaterThan | LessEqualThan
 
 data Error = ErrorType ErrorType deriving (Show)
 
-data ErrorType = Syntax
-               | Type
-               | TypeFunction
-               | AssignType
-               deriving (Show)
+data ErrorType
+  = Syntax
+  | Type
+  | TypeFunction
+  | AssignType
+  deriving (Show)
 
-data Comment = CommentLine String
-             | CommentBlock String
-             deriving (Show)
+data Comment
+  = CommentLine String
+  | CommentBlock String
+  deriving (Show)
 
 type Block = String
