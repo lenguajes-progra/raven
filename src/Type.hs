@@ -3,6 +3,7 @@ module Type where
 import Text.Parsec
 import Text.Parsec.String
 import Literal
+import Error
 
 data Identifier = Identifier String
                 deriving (Show)
@@ -22,12 +23,12 @@ data Type = IntType
           | ArrayType Type
           deriving (Show)
 
-data VariableDefinition = VariableDefinitionComplete Type Identifier (Either String Literal)
+data VariableDefinition = VariableDefinitionComplete Type Identifier (Either Error Literal)
                          | VariableDefinitionWithoutAssignment Type Identifier
                          | VariableDefinitionWithAssignment Identifier Literal
                          deriving (Show)
 
-data ArrayDefinition = ArrayDefinitionComplete Type Identifier (Either String ElementList)
+data ArrayDefinition = ArrayDefinitionComplete Type Identifier (Either Error ElementList)
                      | ArrayDefinitionWithoutAssignment Type Identifier
                      | ArrayDefinitionWithAssignment Identifier ElementList
                      deriving (Show)
@@ -59,8 +60,24 @@ variableDefinitionCompleteParser :: Parser VariableDefinition
 variableDefinitionCompleteParser = VariableDefinitionComplete
         <$> typeParser <* spaces
         <*> identifierParser <* spaces
-        <*> (char '=' *> spaces *> ((Left <$> string "error") <|> (Right <$> literalParser)))
+        <*> (char '=' *> spaces *> ((Left <$> errorParser) <|> (Right <$> literalParser)))
         <* char ';'
+
+literalParserMatchesType :: Type -> Parser (Either Error Literal)
+literalParserMatchesType tp =
+    literalParser >>= \literal ->
+    if literalMatchesType tp literal
+        then return (Right literal)
+        else return (Left (ErrorType Type))
+
+
+literalMatchesType :: Type -> Literal -> Bool
+literalMatchesType tp literal = case (tp, literal) of
+    (IntType, IntegerLiteral _) -> True
+    (CharType, CharacterLiteral _) -> True
+    (BooleanType, BooleanLiteral _) -> True
+    (StringType, StringLiteral _) -> True
+    _ -> False
 
 variableDefinitionWithoutAssignmentParser :: Parser VariableDefinition
 variableDefinitionWithoutAssignmentParser = VariableDefinitionWithoutAssignment
@@ -82,7 +99,7 @@ arrayDefinitionCompleteParser :: Parser ArrayDefinition
 arrayDefinitionCompleteParser = ArrayDefinitionComplete
         <$> typeParser <* spaces
         <*> identifierParser <* spaces
-        <*> (char '=' *> spaces *> ((Left <$> string "error") <|> (Right <$> elementListParser)))
+        <*> (char '=' *> spaces *> (try (Left <$> errorParser) <|> (Right <$> elementListParser)))
 
 arrayDefinitionWithoutAssignmentParser :: Parser ArrayDefinition
 arrayDefinitionWithoutAssignmentParser = ArrayDefinitionWithoutAssignment
