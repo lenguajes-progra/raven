@@ -6,7 +6,7 @@ import Expression (Expression, parseExpression)
 
 data IfStatement = IfStatement Expression Block Block deriving (Show)
 
-type Block = String 
+type Block = String
 
 ifStatementParser :: Parser IfStatement
 ifStatementParser =
