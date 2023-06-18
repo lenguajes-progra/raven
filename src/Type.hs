@@ -3,7 +3,7 @@ module Type (Identifier (..), identifierParser) where
 import Text.Parsec
 import Text.Parsec.String
 import Literal
-import Error
+import Error ( errorParser, ErrorType(Type), Error(..) )
 
 data Identifier = Ident String
   deriving (Show)

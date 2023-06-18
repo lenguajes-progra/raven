@@ -1,14 +1,14 @@
-module Error(Error(ErrorType), ErrorType(Syntax, Type, FunctionType, AssignType)) where
+module Error (Error (ErrorType), ErrorType (Syntax, Type, TypeFunction, AssignType), errorParser) where
 
+import Control.Applicative hiding (many, optional, (<|>))
 import Text.Parsec
 import Text.Parsec.String (Parser)
-import Control.Applicative hiding (many, optional, (<|>))
 
 data Error = ErrorType ErrorType deriving (Show)
 
 data ErrorType = Syntax
                | Type
-               | FunctionType
+               | TypeFunction
                | AssignType
                deriving (Show)
 
