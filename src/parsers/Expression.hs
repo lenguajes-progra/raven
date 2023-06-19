@@ -13,8 +13,8 @@ parseFromTo s a = many space >> string s *> many space $> a
 
 parseLiteralOrIdentifier :: Parser Expression
 parseLiteralOrIdentifier =
-  lexeme (Identifier <$> try identifierParser)
-    <|> lexeme (Literal <$> try literalParser)
+  lexeme (Literal <$> try literalParser)
+    <|> lexeme (Identifier <$> try identifierParser)
 
 -- !INFO: Numeric Expression
 parseEqual :: Parser NumericOperator
