@@ -54,7 +54,7 @@ executables:
 
 tests:
   raven-test:
-    main:                Spec.hs
+    main:                MainTest.hs
     source-dirs:         test
     ghc-options:
     - -threaded
@@ -62,3 +62,6 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - raven
+    - parsec
+    - tasty
+    - tasty-hunit

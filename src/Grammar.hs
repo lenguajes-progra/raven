@@ -5,18 +5,18 @@ data Literal
   | CharacterLiteral Char
   | StringLiteral String
   | BooleanLiteral Bool
-  deriving (Show)
+  deriving (Eq, Show)
 
 data Identifier = Ident String
-  deriving (Show)
+  deriving (Eq, Show)
 
 data Element
   = LiteralElement Literal
   | IdentifierElement Identifier
-  deriving (Show)
+  deriving (Eq, Show)
 
 data ElementList = Literals [Literal]
-  deriving (Show)
+  deriving (Eq, Show)
 
 data Type
   = IntType
@@ -25,24 +25,24 @@ data Type
   | StringType
   | FunctionType
   | ArrayType Type
-  deriving (Show)
+  deriving (Eq, Show)
 
 data VariableDefinition
   = VariableDefinitionComplete Type Identifier (Either Error Literal)
   | VariableDefinitionWithoutAssignment Type Identifier
   | VariableDefinitionWithAssignment Identifier Literal
-  deriving (Show)
+  deriving (Eq, Show)
 
 data ArrayDefinition
   = ArrayDefinitionComplete Type Identifier (Either Error ElementList)
   | ArrayDefinitionWithoutAssignment Type Identifier
   | ArrayDefinitionWithAssignment Identifier ElementList
-  deriving (Show)
+  deriving (Eq, Show)
 
 data PrintStatement = PrintStatement Expression
-  deriving (Show)
+  deriving (Eq, Show)
 
-data IfStatement = IfStatement Expression Block Block deriving (Show)
+data IfStatement = IfStatement Expression Block Block deriving (Eq, Show)
 
 data Expression
   = Literal Literal
@@ -51,41 +51,41 @@ data Expression
   | LogicalExpression LogicalExpression
   | BitExpression BitExpression
   | Parens Expression
-  deriving (Show)
+  deriving (Eq, Show)
 
 data LogicalExpression
   = LogicNot Expression
   | LogicOp Expression LogicalOperator Expression
-  deriving (Show)
+  deriving (Eq, Show)
 
 data BitExpression
   = BitNot Expression
   | BitOp Expression BitOperator Expression
-  deriving (Show)
+  deriving (Eq, Show)
 
 data NumericExpression
   = NumericOp Expression NumericOperator Expression
-  deriving (Show)
+  deriving (Eq, Show)
 
-data LogicalOperator = And | Or | Not deriving (Show)
+data LogicalOperator = And | Or | Not deriving (Eq, Show)
 
-data BitOperator = AndBit | OrBit | XorBit | RightShift | LeftShift | NotBit deriving (Show)
+data BitOperator = AndBit | OrBit | XorBit | RightShift | LeftShift | NotBit deriving (Eq, Show)
 
-data NumericOperator = Equal | NotEqual | LessThan | GreaterThan | LessEqualThan | GreatEqualThan deriving (Show)
+data NumericOperator = Equal | NotEqual | LessThan | GreaterThan | LessEqualThan | GreatEqualThan deriving (Eq, Show)
 
-data Error = ErrorType ErrorType deriving (Show)
+data Error = ErrorType ErrorType deriving (Eq, Show)
 
 data ErrorType
   = Syntax
   | Type
   | TypeFunction
   | AssignType
-  deriving (Show)
+  deriving (Eq, Show)
 
 data Comment
   = CommentLine String
   | CommentBlock String
-  deriving (Show)
+  deriving (Eq, Show)
 
 type Block = String
 

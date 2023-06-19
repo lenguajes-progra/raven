@@ -37,6 +37,16 @@ packages:
 #
 extra-deps:
 - parsec-3.1.16.1
+- tasty-1.4.3
+- ansi-terminal-0.11.5
+- ansi-terminal-types-0.11.5
+- colour-2.3.6
+- optparse-applicative-0.17.0.0
+- ansi-wl-pprint-0.6.9
+- transformers-compat-0.7.2
+- tagged-0.8.7
+- tasty-hunit-0.10.0.3
+- call-stack-0.4.0
 # - git: https://github.com/commercialhaskell/stack.git
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 #
