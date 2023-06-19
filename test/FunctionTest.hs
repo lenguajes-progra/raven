@@ -32,6 +32,9 @@ testFunctionDefinitionWithParameters = assertEqual "parseFunctionDefWithParamete
 testFunctionDefinitionWithArrayAsParameter :: Assertion
 testFunctionDefinitionWithArrayAsParameter = assertEqual "parseFunctionDefWithArrayAsParameter" (parse functionDefinitionParser "" "string my_function([boolean] arr) block 5 >= 6  end") (Right (FuncDefinition StringType (Ident "my_function") (Parameters [(ArrayType BooleanType,Ident "arr")]) "block" (NumericExpression (NumericOp (Literal (IntegerLiteral 5)) GreatEqualThan (Literal (IntegerLiteral 6))))))
 
+testFunctionDefinitionWithArraysAsParameters :: Assertion
+testFunctionDefinitionWithArraysAsParameters = assertEqual "parseFunctionDefWithArraysAsParameters" (parse functionDefinitionParser "" "int my_function([boolean] arr, [int] arr2, [string] arr3) block 5 <= 6  end") (Right (FuncDefinition IntType (Ident "my_function") (Parameters [(ArrayType BooleanType,Ident "arr"),(ArrayType IntType,Ident "arr2"),(ArrayType StringType,Ident "arr3")]) "block" (NumericExpression (NumericOp (Literal (IntegerLiteral 5)) LessEqualThan (Literal (IntegerLiteral 6))))))
+
 functionTests :: TestTree
 functionTests = testGroup "Builder Function Tests" [
     testCase "parseFunctionDefIntType" testFunctionDefinitionParserIntType,
@@ -40,4 +43,5 @@ functionTests = testGroup "Builder Function Tests" [
     testCase "parseFunctionDefStringType" testFunctionDefinitionParserStringType,
     testCase "parseFunctionDefWithParameter" testFunctionDefinitionWithParameter,
     testCase "parseFunctionDefWithParameters" testFunctionDefinitionWithParameters,
-    testCase "parseFunctionDefWithArrayAsParameter" testFunctionDefinitionWithArrayAsParameter]
+    testCase "parseFunctionDefWithArrayAsParameter" testFunctionDefinitionWithArrayAsParameter,
+    testCase "parseFunctionDefWithArraysAsParameters" testFunctionDefinitionWithArraysAsParameters]
