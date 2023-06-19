@@ -77,7 +77,7 @@ parseBitNot = parseFromTo "~" BitNot <*> term
 
 parseBitExpression :: Parser BitExpression
 parseBitExpression =
-  BitOp <$> term <*> parseBitOperator <*> term
+  BitOp <$> term <*> parseBitOperator <*> parseExpression
     <|> try parseBitNot
 
 -- !INFO: Logical Expression
@@ -97,7 +97,7 @@ parseLogicalNot = parseFromTo "!" LogicNot <*> term
 
 parseLogicalExpression :: Parser LogicalExpression
 parseLogicalExpression =
-  LogicOp <$> term <*> parseLogicalOperator <*> term
+  LogicOp <$> term <*> parseLogicalOperator <*> parseExpression
     <|> parseLogicalNot
 
 -- !INFO: Parse Expression
