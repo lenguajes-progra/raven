@@ -51,6 +51,7 @@ data Expression
   | LogicalExpression LogicalExpression
   | BitExpression BitExpression
   | Parens Expression
+  | FuncCall FunctionCall
   deriving (Eq, Show)
 
 data LogicalExpression
@@ -103,3 +104,5 @@ data ParameterOption
 newtype ParametersCalled = ParametersCalled [ParameterOption] deriving (Eq, Show)
 
 data FunctionCall = FunctionCall Identifier ParametersCalled deriving (Eq, Show)
+
+data Statement = Expression Expression

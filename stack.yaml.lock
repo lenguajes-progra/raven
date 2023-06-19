@@ -11,4 +11,74 @@ packages:
       size: 2698
   original:
     hackage: parsec-3.1.16.1
+- completed:
+    hackage: tasty-1.4.3@sha256:5b53fded93109f6704b599c3498eb73c5b0ed1a975f1912dd98b4b19c61f8bc9,2653
+    pantry-tree:
+      sha256: 99e16394d2260ea67187c474521321cef3db4a3e02b9d4efaacebad3cd936dbe
+      size: 1944
+  original:
+    hackage: tasty-1.4.3
+- completed:
+    hackage: ansi-terminal-0.11.5@sha256:2fe3d006b9ea0dc1a5537a029edb0bc2bbe56a33a6d95264b38b54c58e931e51,3752
+    pantry-tree:
+      sha256: a9564fdb057ec50fd46b14cd2964fff101dcd0ed5a8c13b72ddeba736a600cba
+      size: 1388
+  original:
+    hackage: ansi-terminal-0.11.5
+- completed:
+    hackage: ansi-terminal-types-0.11.5@sha256:f78440dfd95c4509e88855ac7cc2d9566ddf956a92c1290404cac93ad1a1b00a,1482
+    pantry-tree:
+      sha256: 0a03e697837c4fae43543f3be0fcf9d88157ba637fbd1b656fc8bf79b1656a14
+      size: 291
+  original:
+    hackage: ansi-terminal-types-0.11.5
+- completed:
+    hackage: colour-2.3.6@sha256:ebdcbf15023958838a527e381ab3c3b1e99ed12d1b25efeb7feaa4ad8c37664a,2378
+    pantry-tree:
+      sha256: 03f8e22f364deb86098dbfbe0bf83c896437b2355f139abdac0402658fb6ac7e
+      size: 1183
+  original:
+    hackage: colour-2.3.6
+- completed:
+    hackage: optparse-applicative-0.17.0.0@sha256:0713e54cbb341e5cae979e2ac441eb3a5ff42e303001f432bd58c19e5638bdda,4967
+    pantry-tree:
+      sha256: 3b4398845ee6718fe2303870a5ab75bd190eb712fed2f22caaae30f790c490fd
+      size: 3124
+  original:
+    hackage: optparse-applicative-0.17.0.0
+- completed:
+    hackage: ansi-wl-pprint-0.6.9@sha256:212144ea0623b1170807a4162db05d87f26cf10b334aeadd0edb377aba06a1ce,2425
+    pantry-tree:
+      sha256: 0a2390ba39c3b84f68e382cb25b58cea66d61a89dab818bb5e2a6c12642e2e21
+      size: 472
+  original:
+    hackage: ansi-wl-pprint-0.6.9
+- completed:
+    hackage: transformers-compat-0.7.2@sha256:044fb9955f63ee138fcebedfdcbe54afe741f2d5892a2d0bdf3a8052bd342643,5601
+    pantry-tree:
+      sha256: f49610c6a2faf82111e5d4222576f4afbcfa904bf56665232c5aa077dfc7578f
+      size: 1724
+  original:
+    hackage: transformers-compat-0.7.2
+- completed:
+    hackage: tagged-0.8.7@sha256:9013e1491dc0d291cb37c2845973293a03c230374f44792bfc96e14fdfb426dc,2880
+    pantry-tree:
+      sha256: a5b3d421c0bfd9f764e31639f4c844b5737810be2b683923142096fc5ab60efe
+      size: 496
+  original:
+    hackage: tagged-0.8.7
+- completed:
+    hackage: tasty-hunit-0.10.0.3@sha256:ba774024f3a26100c559dbef41e030bdf443408ed848691f7b9aa85b6fb218c3,1545
+    pantry-tree:
+      sha256: c82bce9c756f82fa9221fc2f89b8fa52858d630a388b9288af90cb0c03e084de
+      size: 399
+  original:
+    hackage: tasty-hunit-0.10.0.3
+- completed:
+    hackage: call-stack-0.4.0@sha256:ac44d2c00931dc20b01750da8c92ec443eb63a7231e8550188cb2ac2385f7feb,1200
+    pantry-tree:
+      sha256: 04134fa69cdd824b4e4bb7f77e7173e0705f27deabdbbf99549c549400191e1e
+      size: 501
+  original:
+    hackage: call-stack-0.4.0
 snapshots: []

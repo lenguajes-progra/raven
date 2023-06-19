@@ -1,6 +1,7 @@
 module Expression where
 
 import Data.Functor (void, ($>))
+import Function
 import Grammar
 import Literal
 import Parsers
@@ -107,6 +108,7 @@ parseExpression =
   NumericExpression <$> try parseNumericExpression
     <|> LogicalExpression <$> try parseLogicalExpression
     <|> BitExpression <$> try parseBitExpression
+    <|> FuncCall <$> try parseFunctionCall
     <|> term
 
 term :: Parser Expression
@@ -126,3 +128,35 @@ betweenParens p = symbol '(' *> p <* symbol ')'
 
 parens :: Parser Expression
 parens = Parens <$> betweenParens parseExpression
+
+-- !INFO: Function Parser
+functionDefinitionParser :: Parser FunctionDefinition
+functionDefinitionParser =
+  FuncDefinition
+    <$> typeParser
+    <* spaces
+    <*> identifierParser
+    <* spaces
+    <*> (char '(' *> parametersParser <* spaces <* char ')')
+    <* spaces
+    <*> string "block"
+    <* spaces
+    <*> parseExpression
+    <* spaces
+    <* string "end"
+
+parseParameterOption :: Parser ParameterOption
+parseParameterOption =
+  ParamLiteral <$> lexeme literalParser
+    <|> ParamIdentifier <$> lexeme identifierParser
+
+parseParametersCalled :: Parser ParametersCalled
+parseParametersCalled =
+  ParametersCalled <$> sepBy parseParameterOption (lexeme (char ','))
+
+parseFunctionCall :: Parser FunctionCall
+parseFunctionCall =
+  FunctionCall
+    <$> lexeme identifierParser
+    <*> between (lexeme (char '(')) (lexeme (char ')')) (lexeme parseParametersCalled)
+    <* lexeme (char ';')
