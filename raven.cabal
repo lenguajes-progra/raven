@@ -30,6 +30,7 @@ library
       Comment
       Error
       Expression
+      Function
       If
       Literal
       Parsers

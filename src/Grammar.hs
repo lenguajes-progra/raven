@@ -90,7 +90,16 @@ data Comment
 type Block = String
 
 data Parameters = Parameters [(Type, Identifier)]
-                deriving (Show)
+  deriving (Show)
 
 data FunctionDefinition = FuncDefinition Type Identifier Parameters Block Expression
-                        deriving (Show)
+  deriving (Show)
+
+data ParameterOption
+  = ParamLiteral Literal
+  | ParamIdentifier Identifier
+  deriving (Show)
+
+newtype ParametersCalled = ParametersCalled [ParameterOption] deriving (Show)
+
+data FunctionCall = FunctionCall Identifier ParametersCalled deriving (Show)
