@@ -5,6 +5,7 @@ import ErrorTest
 import LiteralTest
 import TypeTest
 import ExpressionTest
+import FunctionTest
 
 main :: IO ()
 main = defaultMain test
@@ -15,4 +16,5 @@ test = testGroup "Builder Tests" [
     ErrorTest.errorTests,
     LiteralTest.literalTests,
     TypeTest.typeTests,
-    ExpressionTest.expressionTests]
+    ExpressionTest.expressionTests,
+    FunctionTest.functionTests]
