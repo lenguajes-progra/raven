@@ -1,6 +1,12 @@
 module PrintStatement where
 
 import Grammar
+import Expression
+import Text.Parsec
+import Text.Parsec.String
 
-executePrintStatement :: PrintStatement -> IO ()
-executePrintStatement (PrintStatement literal) = print literal
+printStatementParser :: Parser PrintStatement
+printStatementParser =
+  PrintStatement
+    <$> (string "print" *> spaces *> parseExpression)
+    <* spaces <* char ';'
