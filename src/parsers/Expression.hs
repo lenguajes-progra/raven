@@ -45,7 +45,7 @@ parseNumericOperator =
     <|> try parseGreaterThan
 
 parseNumericExpression :: Parser NumericExpression
-parseNumericExpression = NumericOp <$> try term <*> try parseNumericOperator <*> try term
+parseNumericExpression = NumericOp <$> try term <*> try parseNumericOperator <*> try parseExpression
 
 -- !INFO: Bit Expression
 parseAndBitOperator :: Parser BitOperator
@@ -116,7 +116,7 @@ whitespace :: Parser ()
 whitespace = void $ many $ oneOf " \n\t"
 
 lexeme :: Parser a -> Parser a
-lexeme p = p <* whitespace
+lexeme p = whitespace *> p <* whitespace
 
 symbol :: Char -> Parser ()
 symbol c = void $ lexeme $ char c
