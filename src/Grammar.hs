@@ -39,7 +39,7 @@ data ArrayDefinition
   | ArrayDefinitionWithAssignment Identifier ElementList
   deriving (Show)
 
-data PrintStatement = PrintStatement Literal
+data PrintStatement = PrintStatement Expression
   deriving (Show)
 
 data IfStatement = IfStatement Expression Block Block deriving (Show)
