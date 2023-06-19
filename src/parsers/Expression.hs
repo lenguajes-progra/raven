@@ -1,6 +1,6 @@
 module Expression where
 
-import Data.Functor (void, ($>))
+import Data.Functor (($>))
 import Function
 import Grammar
 import Literal
@@ -113,18 +113,6 @@ parseExpression =
 
 term :: Parser Expression
 term = try parseLiteralOrIdentifier <|> try parens
-
-whitespace :: Parser ()
-whitespace = void $ many $ oneOf " \n\t"
-
-lexeme :: Parser a -> Parser a
-lexeme p = whitespace *> p <* whitespace
-
-symbol :: Char -> Parser ()
-symbol c = void $ lexeme $ char c
-
-betweenParens :: Parser a -> Parser a
-betweenParens p = symbol '(' *> p <* symbol ')'
 
 parens :: Parser Expression
 parens = Parens <$> betweenParens parseExpression
