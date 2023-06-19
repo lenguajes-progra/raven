@@ -88,3 +88,9 @@ data Comment
   deriving (Show)
 
 type Block = String
+
+data Parameters = Parameters [(Type, Identifier)]
+                deriving (Show)
+
+data FunctionDefinition = FuncDefinition Type Identifier Parameters Block Expression
+                        deriving (Show)

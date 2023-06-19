@@ -1,4 +1,4 @@
-module Type (Identifier (..), identifierParser) where
+module Type where
 
 import Data.Functor (($>))
 import Error
