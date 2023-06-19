@@ -54,17 +54,17 @@ data Expression
   deriving (Show)
 
 data LogicalExpression
-  = LogicNot LogicalOperator Expression
-  | LogExpr Expression LogicalOperator Expression
+  = LogicNot Expression
+  | LogicOp Expression LogicalOperator Expression
   deriving (Show)
 
 data BitExpression
-  = BitNot BitOperator Expression
-  | BitExpr Expression BitOperator Expression
+  = BitNot Expression
+  | BitOp Expression BitOperator Expression
   deriving (Show)
 
 data NumericExpression
-  = NumExpr Expression NumericOperator Expression
+  = NumericOp Expression NumericOperator Expression
   deriving (Show)
 
 data LogicalOperator = And | Or | Not deriving (Show)

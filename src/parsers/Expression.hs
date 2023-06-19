@@ -1,97 +1,128 @@
 module Expression where
 
-import Data.Functor (($>))
+import Data.Functor (void, ($>))
 import Grammar
 import Literal
 import Parsers
 import Text.Parsec
 import Text.Parsec.String
-import Type 
+import Type
 
 parseFromTo :: String -> a -> Parser a
 parseFromTo s a = many space >> string s *> many space $> a
 
 parseLiteralOrIdentifier :: Parser Expression
 parseLiteralOrIdentifier =
-  Identifier <$> try identifierParser
-    <|> Literal <$> try literalParser
+  lexeme (Identifier <$> try identifierParser)
+    <|> lexeme (Literal <$> try literalParser)
 
--- INFO: Numeric Expression
-
+-- !INFO: Numeric Expression
 parseEqual :: Parser NumericOperator
 parseEqual = parseFromTo "==" Equal
 
 parseNotEqual :: Parser NumericOperator
 parseNotEqual = parseFromTo "!=" NotEqual
 
-parseGreaterThan :: Parser NumericOperator
-parseGreaterThan = parseFromTo ">" GreaterThan
-
 parseLessThan :: Parser NumericOperator
 parseLessThan = parseFromTo "<" LessThan
 
-parseGreaterEqualThan :: Parser NumericOperator
-parseGreaterEqualThan = parseFromTo ">=" GreatEqualThan
+parseGreaterThan :: Parser NumericOperator
+parseGreaterThan = parseFromTo ">" GreaterThan
 
 parseLessEqualThan :: Parser NumericOperator
 parseLessEqualThan = parseFromTo "<=" LessEqualThan
 
+parseGreatEqualThan :: Parser NumericOperator
+parseGreatEqualThan = parseFromTo ">=" GreatEqualThan
+
 parseNumericOperator :: Parser NumericOperator
-parseNumericOperator = try parseEqual <|> try parseNotEqual <|> try parseGreaterEqualThan <|> try parseLessEqualThan <|> try parseGreaterThan <|> try parseLessThan
+parseNumericOperator =
+  try parseEqual
+    <|> try parseNotEqual
+    <|> try parseLessEqualThan
+    <|> try parseGreatEqualThan
+    <|> try parseLessThan
+    <|> try parseGreaterThan
 
 parseNumericExpression :: Parser NumericExpression
-parseNumericExpression = NumExpr <$> try parseLiteralOrIdentifier <*> try parseNumericOperator <*> try parseLiteralOrIdentifier
+parseNumericExpression = NumericOp <$> try term <*> try parseNumericOperator <*> try term
 
--- INFO: Bit Expression
+-- !INFO: Bit Expression
+parseAndBitOperator :: Parser BitOperator
+parseAndBitOperator = parseFromTo "&" AndBit
 
-parseAndBit :: Parser BitOperator
-parseAndBit = parseFromTo "&" AndBit
+parseOrBitOperator :: Parser BitOperator
+parseOrBitOperator = parseFromTo "|" OrBit
 
-parseOrBit :: Parser BitOperator
-parseOrBit = parseFromTo "|" OrBit
+parseXorOperator :: Parser BitOperator
+parseXorOperator = parseFromTo "^" XorBit
 
-parseXorBit :: Parser BitOperator
-parseXorBit = parseFromTo "^" XorBit
+parseLeftShiftOperator :: Parser BitOperator
+parseLeftShiftOperator = parseFromTo "<<" LeftShift
 
-parseRightShiftBit :: Parser BitOperator
-parseRightShiftBit = parseFromTo ">>" RightShift
-
-parseLeftShiftBit :: Parser BitOperator
-parseLeftShiftBit = parseFromTo "<<" LeftShift
-
-parseNotBit :: Parser BitOperator
-parseNotBit = parseFromTo "~" NotBit
+parseRightShiftOperator :: Parser BitOperator
+parseRightShiftOperator = parseFromTo ">>" RightShift
 
 parseBitOperator :: Parser BitOperator
-parseBitOperator = try parseAndBit <|> try parseOrBit <|> try parseXorBit <|> try parseRightShiftBit <|> try parseLeftShiftBit <|> parseNotBit
+parseBitOperator =
+  try parseAndBitOperator
+    <|> try parseAndBitOperator
+    <|> try parseOrBitOperator
+    <|> try parseXorOperator
+    <|> try parseLeftShiftOperator
+    <|> try parseRightShiftOperator
+
+parseBitNot :: Parser BitExpression
+parseBitNot = parseFromTo "~" BitNot <*> term
 
 parseBitExpression :: Parser BitExpression
 parseBitExpression =
-  BitExpr <$> try parseLiteralOrIdentifier <*> try parseBitOperator <*> try parseLiteralOrIdentifier
-    <|> BitNot <$> parseBitOperator <*> try parseLiteralOrIdentifier
+  BitOp <$> term <*> parseBitOperator <*> term
+    <|> try parseBitNot
 
--- INFO: Logical Expression
+-- !INFO: Logical Expression
+parseAndOperator :: Parser LogicalOperator
+parseAndOperator = parseFromTo "&&" And
 
-parseAnd :: Parser LogicalOperator
-parseAnd = parseFromTo "&&" And
-
-parseOr :: Parser LogicalOperator
-parseOr = parseFromTo "||" Or
-
-parseNot :: Parser LogicalOperator
-parseNot = parseFromTo "!" Not
+parseOrOperator :: Parser LogicalOperator
+parseOrOperator = parseFromTo "||" Or
 
 parseLogicalOperator :: Parser LogicalOperator
-parseLogicalOperator = try parseAnd <|> try parseOr <|> try parseNot
+parseLogicalOperator =
+  try parseAndOperator
+    <|> try parseOrOperator
+
+parseLogicalNot :: Parser LogicalExpression
+parseLogicalNot = parseFromTo "!" LogicNot <*> term
 
 parseLogicalExpression :: Parser LogicalExpression
 parseLogicalExpression =
-  LogExpr <$> try parseLiteralOrIdentifier <*> try parseLogicalOperator <*> try parseLiteralOrIdentifier
-    <|> LogicNot <$> try parseLogicalOperator <*> try parseLiteralOrIdentifier
+  LogicOp <$> term <*> parseLogicalOperator <*> term
+    <|> parseLogicalNot
+
+-- !INFO: Parse Expression
 
 parseExpression :: Parser Expression
 parseExpression =
   NumericExpression <$> try parseNumericExpression
     <|> LogicalExpression <$> try parseLogicalExpression
     <|> BitExpression <$> try parseBitExpression
-    <|> try parseLiteralOrIdentifier
+    <|> term
+
+term :: Parser Expression
+term = try parseLiteralOrIdentifier <|> try parens
+
+whitespace :: Parser ()
+whitespace = void $ many $ oneOf " \n\t"
+
+lexeme :: Parser a -> Parser a
+lexeme p = p <* whitespace
+
+symbol :: Char -> Parser ()
+symbol c = void $ lexeme $ char c
+
+betweenParens :: Parser a -> Parser a
+betweenParens p = symbol '(' *> p <* symbol ')'
+
+parens :: Parser Expression
+parens = Parens <$> betweenParens parseExpression
