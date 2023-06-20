@@ -1,14 +1,17 @@
 module Program where
 
+import Grammar
+import Parsers
+import Statement
 import Text.Parsec
 import Text.Parsec.String
-import Grammar
-import Statement
 
 programParser :: Parser Program
 programParser =
   Program
-    <$> functionDefinitionParser
-    <*> (string "main ()" *> spaces *> blockParse)
-    <* spaces
+    <$> ( lexeme (string "main()")
+            *> lexeme (char '`')
+            *> blockParse
+            <* lexeme (char '`')
+        )
     <* string "end"
