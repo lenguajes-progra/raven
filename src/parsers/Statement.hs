@@ -41,7 +41,7 @@ ifStatementParser :: Parser IfStatement
 ifStatementParser =
   IfStatement
     <$> (string "if" *> spaces *> char '(' *> parseExpression <* char ')')
-    <*> (spaces *> blockParse)
-    <*> (spaces *> string "else" *> spaces *> blockParse)
+    <*> (lexeme (char '{') *> spaces *> blockParse <* spaces <* lexeme (char '}'))
+    <*> (spaces *> string "else" *> lexeme (char '{') *> spaces *> blockParse <* spaces <* lexeme (char '}'))
     <* spaces
     <* string "end"
