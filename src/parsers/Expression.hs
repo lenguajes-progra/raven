@@ -118,21 +118,6 @@ parens :: Parser Expression
 parens = Parens <$> betweenParens parseExpression
 
 -- !INFO: Function Parser
-functionDefinitionParser :: Parser FunctionDefinition
-functionDefinitionParser =
-  FuncDefinition
-    <$> typeParser
-    <* spaces
-    <*> identifierParser
-    <* spaces
-    <*> (char '(' *> parametersParser <* spaces <* char ')')
-    <* spaces
-    <*> blockParse
-    <* spaces
-    <*> parseExpression
-    <* spaces
-    <* string "end"
-
 parseParameterOption :: Parser ParameterOption
 parseParameterOption =
   ParamLiteral <$> lexeme literalParser
