@@ -9,4 +9,4 @@ printStatementParser :: Parser PrintStatement
 printStatementParser =
   PrintStatement
     <$> (string "print" *> spaces *> parseExpression)
-    <* spaces <* char ';'
+    <* spaces

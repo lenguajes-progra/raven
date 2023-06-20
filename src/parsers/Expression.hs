@@ -132,4 +132,4 @@ parseFunctionCall =
   FunctionCall
     <$> lexeme identifierParser
     <*> between (lexeme (char '(')) (lexeme (char ')')) (lexeme parseParametersCalled)
-    <* lexeme (char ';')
+    <* lexeme spaces

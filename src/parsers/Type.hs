@@ -42,8 +42,7 @@ variableDefinitionCompleteParser =
         spaces
           >> (char '=' *> spaces *> (try (literalParserMatchesType t) <|> (Left <$> errorParser)))
           >>= \literal ->
-            char ';'
-              >> return (VariableDefinitionComplete t identifier literal)
+              return (VariableDefinitionComplete t identifier literal)
 
 literalParserMatchesType :: Type -> Parser (Either Error Literal)
 literalParserMatchesType tp =
@@ -66,7 +65,6 @@ variableDefinitionWithoutAssignmentParser =
     <$> typeParser
     <* spaces
     <*> identifierParser
-    <* char ';'
 
 variableDefinitionWithAssignmentParser :: Parser VariableDefinition
 variableDefinitionWithAssignmentParser =
@@ -74,7 +72,6 @@ variableDefinitionWithAssignmentParser =
     <$> identifierParser
     <* spaces
     <*> (char '=' *> spaces *> literalParser)
-    <* char ';'
 
 arrayDefinitionParser :: Parser ArrayDefinition
 arrayDefinitionParser =
@@ -109,7 +106,6 @@ arrayDefinitionWithoutAssignmentParser =
     <$> typeParser
     <* spaces
     <*> identifierParser
-    <* char ';'
 
 arrayDefinitionWithAssignmentParser :: Parser ArrayDefinition
 arrayDefinitionWithAssignmentParser =
@@ -117,4 +113,3 @@ arrayDefinitionWithAssignmentParser =
     <$> identifierParser
     <* spaces
     <*> (char '=' *> spaces *> elementListParser)
-    <* char ';'
