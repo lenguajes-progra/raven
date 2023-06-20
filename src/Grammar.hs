@@ -113,4 +113,5 @@ data Statement
   | IfStat IfStatement
   | PrintStat PrintStatement
   | FuncCallStat FunctionCall
+  | End Char
   deriving (Show)
