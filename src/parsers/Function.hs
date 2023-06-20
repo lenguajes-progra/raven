@@ -8,7 +8,7 @@ import Text.Parsec.String
 import Type
 
 parameterParser :: Parser (Type, Identifier)
-parameterParser = (,) <$> typeParser <* spaces <*> identifierParser
+parameterParser = (,) <$> typeParserArray <* spaces <*> identifierParser
 
 parametersParser :: Parser Parameters
 parametersParser = Parameters <$> parameterParser `sepBy` (char ',' *> spaces)
