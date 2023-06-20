@@ -27,15 +27,15 @@ functionDefinitionParser =
 statementParse :: Parser Statement
 statementParse =
   try (VariableDefinition <$> variableDefinitionParser)
-    <|> try (Expression <$> parseExpression)
     <|> try (ArrayDefinition <$> try arrayDefinitionParser)
     <|> try (IfStat <$> try ifStatementParser)
+    <|> try (Expression <$> parseExpression)
     <|> try (PrintStat <$> try printStatementParser)
     <|> try (FuncCallStat <$> try parseFunctionCall)
     <|> try (End <$> try (char '\n'))
 
 blockParse :: Parser Block
-blockParse = Block <$> statementParse `sepBy` (char ';' *> spaces)
+blockParse = Block <$> statementParse `sepBy` lexeme (char ';')
 
 ifStatementParser :: Parser IfStatement
 ifStatementParser =
