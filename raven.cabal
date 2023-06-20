@@ -27,6 +27,7 @@ library
   exposed-modules:
       Grammar
       Lib
+      Block
       Comment
       Error
       Expression

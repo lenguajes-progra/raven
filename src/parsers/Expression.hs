@@ -127,7 +127,7 @@ functionDefinitionParser =
     <* spaces
     <*> (char '(' *> parametersParser <* spaces <* char ')')
     <* spaces
-    <*> string "block"
+    <*> blockParse
     <* spaces
     <*> parseExpression
     <* spaces

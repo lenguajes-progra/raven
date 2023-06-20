@@ -42,7 +42,7 @@ data ArrayDefinition
 data PrintStatement = PrintStatement Expression
   deriving (Eq, Show)
 
-data IfStatement = IfStatement Expression Block Block deriving (Eq, Show)
+data IfStatement = IfStatement Expression Block Block deriving (Show)
 
 data Expression
   = Literal Literal
@@ -88,13 +88,14 @@ data Comment
   | CommentBlock String
   deriving (Eq, Show)
 
-type Block = String
+data Block = Block [Statement]
+  deriving (Show)
 
 data Parameters = Parameters [(Type, Identifier)]
   deriving (Eq, Show)
 
 data FunctionDefinition = FuncDefinition Type Identifier Parameters Block Expression
-  deriving (Eq, Show)
+  deriving (Show)
 
 data ParameterOption
   = ParamLiteral Literal
