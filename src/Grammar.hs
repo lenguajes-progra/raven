@@ -111,7 +111,10 @@ data Statement
   | VariableDefinition VariableDefinition
   | ArrayDefinition ArrayDefinition
   | IfStat IfStatement
+  | LoopStat LoopStatement
   | PrintStat PrintStatement
   | FuncCallStat FunctionCall
   | End Char
   deriving (Show)
+
+data LoopStatement = LoopStatement Expression Block deriving (Show)

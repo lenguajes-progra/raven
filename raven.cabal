@@ -27,12 +27,10 @@ library
   exposed-modules:
       Grammar
       Lib
-      Block
       Comment
       Error
       Expression
       Function
-      If
       Literal
       Parsers
       PrintStatement

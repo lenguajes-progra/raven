@@ -29,6 +29,7 @@ statementParse =
   try (VariableDefinition <$> try variableDefinitionParser)
     <|> try (ArrayDefinition <$> try arrayDefinitionParser)
     <|> try (IfStat <$> try ifStatementParser)
+    <|> try (LoopStat <$> try loopStatementParser)
     <|> try (PrintStat <$> try printStatementParser)
     <|> try (FuncCallStat <$> try parseFunctionCall)
     <|> try (Expression <$> try parseExpression)
@@ -43,5 +44,13 @@ ifStatementParser =
     <$> (string "if" *> spaces *> char '(' *> parseExpression <* char ')')
     <*> (lexeme (char '{') *> spaces *> blockParse <* spaces <* lexeme (char '}'))
     <*> (spaces *> string "else" *> lexeme (char '{') *> spaces *> blockParse <* spaces <* lexeme (char '}'))
+    <* spaces
+    <* string "end"
+
+loopStatementParser :: Parser LoopStatement
+loopStatementParser =
+  LoopStatement
+    <$> (string "while" *> spaces *> char '(' *> parseExpression <* char ')')
+    <*> (lexeme (char '{') *> spaces *> blockParse <* spaces <* lexeme (char '}'))
     <* spaces
     <* string "end"
