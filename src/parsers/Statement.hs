@@ -29,9 +29,9 @@ statementParse =
   try (VariableDefinition <$> variableDefinitionParser)
     <|> try (ArrayDefinition <$> try arrayDefinitionParser)
     <|> try (IfStat <$> try ifStatementParser)
-    <|> try (Expression <$> parseExpression)
     <|> try (PrintStat <$> try printStatementParser)
     <|> try (FuncCallStat <$> try parseFunctionCall)
+    <|> try (Expression <$> parseExpression)
     <|> try (End <$> try (char '\n'))
 
 blockParse :: Parser Block
