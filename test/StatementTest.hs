@@ -29,7 +29,10 @@ testStatementParseFunCall :: Assertion
 testStatementParseFunCall = assertEqual "statementParseFunCall" (parse statementParse "" "main()") (Right (FuncCallStat (FunctionCall (Ident "main") (ParametersCalled []))))
 
 testStatementParseExp :: Assertion
-testStatementParseExp = assertEqual "statementParseFunCall" (parse statementParse "" "a >= b") (Right (Expression (NumericExpression (NumericOp (Identifier (Ident "a")) GreatEqualThan (Identifier (Ident "b"))))))
+testStatementParseExp = assertEqual "statementParseExp" (parse statementParse "" "a >= b") (Right (Expression (NumericExpression (NumericOp (Identifier (Ident "a")) GreatEqualThan (Identifier (Ident "b"))))))
+
+testStatementParseEnd :: Assertion
+testStatementParseEnd = assertEqual "statementParseEnd" (parse statementParse "" "\n") (Right (End '\n'))
 
 statementTests :: TestTree
 statementTests = testGroup "Builder Statement Tests" [
@@ -39,5 +42,6 @@ statementTests = testGroup "Builder Statement Tests" [
     testCase "statementParseLoop" testStatementParseLoop,
     testCase "statementParsePrint" testStatementParsePrint,
     testCase "statementParseFunCall" testStatementParseFunCall,
-    testCase "statementParseExp" testStatementParseExp
+    testCase "statementParseExp" testStatementParseExp,
+    testCase "statementParseEnd" testStatementParseEnd
     ]
