@@ -15,8 +15,8 @@ functionDefinitionParser =
     spaces >>
     identifierParser >>= \name ->
       spaces >>
-      char '(' *> parametersParser <* spaces <* char ')' >>= \parameters ->
-        lexeme (char '{') *> spaces *> blockParse <* spaces <* lexeme (char '}') >>= \body ->
+      char '(' *> parametersParser <* spaces <* char ')' <* spaces >>= \parameters ->
+        char '{' *> spaces *> blockParse <* spaces <* char '}' <* spaces >>= \body ->
           string "return" *> spaces *> try (expressParserMatchesType returnType) <* spaces >>= \exprType ->
             string "end" >>
             return (FuncDefinition returnType name parameters body exprType)
