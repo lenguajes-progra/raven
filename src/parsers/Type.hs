@@ -25,6 +25,10 @@ typeParser =
     <|> try (string "boolean" $> BooleanType)
     <|> try (string "string" $> StringType)
     <|> try (string "function" $> FunctionType)
+
+typeParserArray :: Parser Type
+typeParserArray =
+  try typeParser
     <|> try (ArrayType <$> (spaces *> char '[' >> spaces >> typeParser <* spaces <* char ']'))
 
 variableDefinitionParser :: Parser VariableDefinition
@@ -42,8 +46,7 @@ variableDefinitionCompleteParser =
         spaces
           >> (char '=' *> spaces *> (try (literalParserMatchesType t) <|> (Left <$> errorParser)))
           >>= \literal ->
-            char ';'
-              >> return (VariableDefinitionComplete t identifier literal)
+              return (VariableDefinitionComplete t identifier literal)
 
 literalParserMatchesType :: Type -> Parser (Either Error Literal)
 literalParserMatchesType tp =
@@ -66,7 +69,6 @@ variableDefinitionWithoutAssignmentParser =
     <$> typeParser
     <* spaces
     <*> identifierParser
-    <* char ';'
 
 variableDefinitionWithAssignmentParser :: Parser VariableDefinition
 variableDefinitionWithAssignmentParser =
@@ -74,7 +76,6 @@ variableDefinitionWithAssignmentParser =
     <$> identifierParser
     <* spaces
     <*> (char '=' *> spaces *> literalParser)
-    <* char ';'
 
 arrayDefinitionParser :: Parser ArrayDefinition
 arrayDefinitionParser =
@@ -84,7 +85,7 @@ arrayDefinitionParser =
 
 arrayDefinitionCompleteParser :: Parser ArrayDefinition
 arrayDefinitionCompleteParser =
-  typeParser >>= \dataType ->
+  typeParserArray >>= \dataType ->
     spaces
       >> identifierParser
       >>= \identifier ->
@@ -106,10 +107,9 @@ elementsMatchType (ArrayType tp) (Literals literals) = all (literalMatchesType t
 arrayDefinitionWithoutAssignmentParser :: Parser ArrayDefinition
 arrayDefinitionWithoutAssignmentParser =
   ArrayDefinitionWithoutAssignment
-    <$> typeParser
+    <$> typeParserArray
     <* spaces
     <*> identifierParser
-    <* char ';'
 
 arrayDefinitionWithAssignmentParser :: Parser ArrayDefinition
 arrayDefinitionWithAssignmentParser =
@@ -117,4 +117,3 @@ arrayDefinitionWithAssignmentParser =
     <$> identifierParser
     <* spaces
     <*> (char '=' *> spaces *> elementListParser)
-    <* char ';'

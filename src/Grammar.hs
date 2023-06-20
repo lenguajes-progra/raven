@@ -42,7 +42,7 @@ data ArrayDefinition
 data PrintStatement = PrintStatement Expression
   deriving (Eq, Show)
 
-data IfStatement = IfStatement Expression Block Block deriving (Eq, Show)
+data IfStatement = IfStatement Expression Block Block deriving (Show)
 
 data Expression
   = Literal Literal
@@ -51,6 +51,7 @@ data Expression
   | LogicalExpression LogicalExpression
   | BitExpression BitExpression
   | Parens Expression
+  | FuncCall FunctionCall
   deriving (Eq, Show)
 
 data LogicalExpression
@@ -87,13 +88,17 @@ data Comment
   | CommentBlock String
   deriving (Eq, Show)
 
-type Block = String
+data Block = Block [Statement]
+  deriving (Show)
 
 data Parameters = Parameters [(Type, Identifier)]
   deriving (Eq, Show)
 
 data FunctionDefinition = FuncDefinition Type Identifier Parameters Block Expression
-  deriving (Eq, Show)
+  deriving (Show)
+
+data FunctionDefinitionList = FuncDefList [FunctionDefinition]
+  deriving (Show)
 
 data ParameterOption
   = ParamLiteral Literal
@@ -103,3 +108,19 @@ data ParameterOption
 newtype ParametersCalled = ParametersCalled [ParameterOption] deriving (Eq, Show)
 
 data FunctionCall = FunctionCall Identifier ParametersCalled deriving (Eq, Show)
+
+data Statement
+  = Expression Expression
+  | VariableDefinition VariableDefinition
+  | ArrayDefinition ArrayDefinition
+  | IfStat IfStatement
+  | LoopStat LoopStatement
+  | PrintStat PrintStatement
+  | FuncCallStat FunctionCall
+  | End Char
+  deriving (Show)
+
+data LoopStatement = LoopStatement Expression Block deriving (Show)
+
+-- data Program = Program FunctionDefinitionList Block deriving (Show)
+data Program = Program Block deriving (Show)

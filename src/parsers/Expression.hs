@@ -1,6 +1,7 @@
 module Expression where
 
-import Data.Functor (void, ($>))
+import Data.Functor (($>))
+import Function
 import Grammar
 import Literal
 import Parsers
@@ -107,22 +108,28 @@ parseExpression =
   NumericExpression <$> try parseNumericExpression
     <|> LogicalExpression <$> try parseLogicalExpression
     <|> BitExpression <$> try parseBitExpression
+    <|> FuncCall <$> try parseFunctionCall
     <|> term
 
 term :: Parser Expression
 term = try parseLiteralOrIdentifier <|> try parens
 
-whitespace :: Parser ()
-whitespace = void $ many $ oneOf " \n\t"
-
-lexeme :: Parser a -> Parser a
-lexeme p = whitespace *> p <* whitespace
-
-symbol :: Char -> Parser ()
-symbol c = void $ lexeme $ char c
-
-betweenParens :: Parser a -> Parser a
-betweenParens p = symbol '(' *> p <* symbol ')'
-
 parens :: Parser Expression
 parens = Parens <$> betweenParens parseExpression
+
+-- !INFO: Function Parser
+parseParameterOption :: Parser ParameterOption
+parseParameterOption =
+  ParamLiteral <$> lexeme literalParser
+    <|> ParamIdentifier <$> lexeme identifierParser
+
+parseParametersCalled :: Parser ParametersCalled
+parseParametersCalled =
+  ParametersCalled <$> sepBy parseParameterOption (lexeme (char ','))
+
+parseFunctionCall :: Parser FunctionCall
+parseFunctionCall =
+  FunctionCall
+    <$> lexeme identifierParser
+    <*> between (lexeme (char '(')) (lexeme (char ')')) (lexeme parseParametersCalled)
+    <* lexeme spaces
