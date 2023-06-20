@@ -40,6 +40,9 @@ testBlockParse = assertEqual "blockParse" (parse blockParse "" "print f") (Right
 testBlockParseBB :: Assertion
 testBlockParseBB = assertEqual "blockParseBB" (parse blockParseBetweenBrackets "" "{ print f }") (Right (Block [PrintStat (PrintStatement (Identifier (Ident "f")))]))
 
+testIfStmntParser :: Assertion
+testIfStmntParser = assertEqual "ifStmntParser" (parse ifStatementParser "" "if(a==b) {while (a==b) {int a = 2} end} else {print f} end") (Right (IfStatement (NumericExpression (NumericOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [LoopStat (LoopStatement (NumericExpression (NumericOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (Right (IntegerLiteral 2)))]))]) (Block [PrintStat (PrintStatement (Identifier (Ident "f")))])))
+
 statementTests :: TestTree
 statementTests = testGroup "Builder Statement Tests" [
     testCase "statementParseVarDef" testStatementParseVarDef,
@@ -51,5 +54,6 @@ statementTests = testGroup "Builder Statement Tests" [
     testCase "statementParseExp" testStatementParseExp,
     testCase "statementParseEnd" testStatementParseEnd,
     testCase "blockParse" testBlockParse,
-    testCase "blockParseBB" testBlockParseBB
+    testCase "blockParseBB" testBlockParseBB,
+    testCase "testIfStmnt" testIfStmntParser
     ]
