@@ -34,6 +34,12 @@ testStatementParseExp = assertEqual "statementParseExp" (parse statementParse ""
 testStatementParseEnd :: Assertion
 testStatementParseEnd = assertEqual "statementParseEnd" (parse statementParse "" "\n") (Right (End '\n'))
 
+testBlockParse :: Assertion
+testBlockParse = assertEqual "blockParse" (parse blockParse "" "print f") (Right (Block [PrintStat (PrintStatement (Identifier (Ident "f")))]))
+
+testBlockParseBB :: Assertion
+testBlockParseBB = assertEqual "blockParseBB" (parse blockParseBetweenBrackets "" "{ print f }") (Right (Block [PrintStat (PrintStatement (Identifier (Ident "f")))]))
+
 statementTests :: TestTree
 statementTests = testGroup "Builder Statement Tests" [
     testCase "statementParseVarDef" testStatementParseVarDef,
@@ -43,5 +49,7 @@ statementTests = testGroup "Builder Statement Tests" [
     testCase "statementParsePrint" testStatementParsePrint,
     testCase "statementParseFunCall" testStatementParseFunCall,
     testCase "statementParseExp" testStatementParseExp,
-    testCase "statementParseEnd" testStatementParseEnd
+    testCase "statementParseEnd" testStatementParseEnd,
+    testCase "blockParse" testBlockParse,
+    testCase "blockParseBB" testBlockParseBB
     ]
