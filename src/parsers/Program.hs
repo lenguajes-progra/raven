@@ -7,7 +7,7 @@ import Text.Parsec
 import Text.Parsec.String
 
 functionsDefinitionParser :: Parser FunctionDefinitionList
-functionsDefinitionParser = FuncDefList <$> functionDefinitionParser `sepBy` lexeme (string "\n")
+functionsDefinitionParser = FuncDefList <$> functionDefinitionParser `sepBy` (char '\n' *> spaces)
 
 programParser :: Parser Program
 programParser =
