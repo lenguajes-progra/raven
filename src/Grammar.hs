@@ -118,3 +118,5 @@ data Statement
   deriving (Show)
 
 data LoopStatement = LoopStatement Expression Block deriving (Show)
+
+data Program = Program [FunctionDefinition] Block
