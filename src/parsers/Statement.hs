@@ -9,18 +9,6 @@ import Text.Parsec
 import Text.Parsec.String
 import Type
 
--- functionDefinitionParser :: Parser FunctionDefinition
--- functionDefinitionParser =
-  -- FuncDefinition
-    -- <$> typeParser
-    -- <* spaces
-    -- <*> identifierParser
-    -- <* spaces
-    -- <*> (char '(' *> parametersParser <* spaces <* char ')')
-    -- <*> (lexeme (char '{') *> spaces *> blockParse <* spaces <* lexeme (char '}'))
-    -- <*> (string "return" *> spaces *> parseExpression <* spaces)
-    -- <* string "end"
-
 functionDefinitionParser :: Parser FunctionDefinition
 functionDefinitionParser =
   typeParser >>= \returnType ->
