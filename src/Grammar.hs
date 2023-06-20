@@ -42,7 +42,7 @@ data ArrayDefinition
 data PrintStatement = PrintStatement Expression
   deriving (Eq, Show)
 
-data IfStatement = IfStatement Expression Block Block deriving (Show)
+data IfStatement = IfStatement Expression Block Block deriving (Eq, Show)
 
 data Expression
   = Literal Literal
@@ -89,16 +89,17 @@ data Comment
   deriving (Eq, Show)
 
 data Block = Block [Statement]
-  deriving (Show)
+  deriving (Eq, Show)
 
 data Parameters = Parameters [(Type, Identifier)]
   deriving (Eq, Show)
 
-data FunctionDefinition = FuncDefinition Type Identifier Parameters Block Expression
-  deriving (Show)
+data FunctionDefinition 
+  = FuncDefinition Type Identifier Parameters Block (Either Error Expression)
+  deriving (Eq, Show)
 
 data FunctionDefinitionList = FuncDefList [FunctionDefinition]
-  deriving (Show)
+  deriving (Eq, Show)
 
 data ParameterOption
   = ParamLiteral Literal
@@ -118,9 +119,9 @@ data Statement
   | PrintStat PrintStatement
   | FuncCallStat FunctionCall
   | End Char
-  deriving (Show)
+  deriving (Eq, Show)
 
-data LoopStatement = LoopStatement Expression Block deriving (Show)
+data LoopStatement = LoopStatement Expression Block deriving (Eq, Show)
 
 -- data Program = Program FunctionDefinitionList Block deriving (Show)
-data Program = Program Block deriving (Show)
+data Program = Program Block deriving (Eq, Show)

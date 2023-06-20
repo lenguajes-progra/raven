@@ -7,17 +7,18 @@ import Text.Parsec
 import Text.Parsec.String
 
 functionsDefinitionParser :: Parser FunctionDefinitionList
-functionsDefinitionParser = FuncDefList <$> functionDefinitionParser `sepBy` lexeme (string "\n")
+functionsDefinitionParser = FuncDefList <$> functionDefinitionParser `sepBy` (char '\n' *> spaces)
 
-programParser :: Parser Program
+programParser :: Parser (Either Error Program)
 programParser =
-  Program
+  try (Right <$> (Program
     <$> ( lexeme (string "main()")
             *> lexeme (char '`')
-            *> blockParse
+            *>  blockParse
             <* lexeme (char '`')
         )
-    <* string "end"
+    <* string "end"))
+    <|> (Left <$> pure (ErrorType Syntax))
 
 textReader :: IO ()
 textReader = do

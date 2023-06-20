@@ -8,7 +8,7 @@ regularParse :: Parser a -> String -> Either ParseError a
 regularParse p = parse p ""
 
 whitespace :: Parser ()
-whitespace = void $ many $ oneOf " \n\t"
+whitespace = void $ many $ oneOf " \t"
 
 lexeme :: Parser a -> Parser a
 lexeme p = whitespace *> p <* whitespace
