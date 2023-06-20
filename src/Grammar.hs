@@ -122,4 +122,5 @@ data Statement
 
 data LoopStatement = LoopStatement Expression Block deriving (Show)
 
-data Program = Program FunctionDefinitionList Block deriving (Show)
+-- data Program = Program FunctionDefinitionList Block deriving (Show)
+data Program = Program Block deriving (Show)

@@ -12,10 +12,14 @@ functionsDefinitionParser = FuncDefList <$> functionDefinitionParser `sepBy` lex
 programParser :: Parser Program
 programParser =
   Program
-  <$> functionsDefinitionParser
-    <*> ( lexeme (string "main()")
+    <$> ( lexeme (string "main()")
             *> lexeme (char '`')
             *> blockParse
             <* lexeme (char '`')
         )
     <* string "end"
+
+textReader :: IO ()
+textReader = do
+  fileText <- readFile "../resources/input.rav"
+  print (parse programParser "../resources/input.rav" fileText)

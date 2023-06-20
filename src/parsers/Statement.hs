@@ -39,15 +39,18 @@ ifStatementParser :: Parser IfStatement
 ifStatementParser =
   IfStatement
     <$> (string "if" *> spaces *> char '(' *> parseExpression <* char ')')
-    <*> (lexeme (char '{') *> spaces *> blockParse <* spaces <* lexeme (char '}'))
-    <*> (spaces *> string "else" *> lexeme (char '{') *> spaces *> blockParse <* spaces <* lexeme (char '}'))
+    <*> blockParseBetweenBrackets
+    <*> (spaces *> string "else" *> blockParseBetweenBrackets)
     <* spaces
     <* string "end"
+
+blockParseBetweenBrackets :: Parser Block
+blockParseBetweenBrackets = between (lexeme (char '{')) (lexeme (char '}')) (spaces *> blockParse <* spaces)
 
 loopStatementParser :: Parser LoopStatement
 loopStatementParser =
   LoopStatement
     <$> (string "while" *> spaces *> char '(' *> parseExpression <* char ')')
-    <*> (lexeme (char '{') *> spaces *> blockParse <* spaces <* lexeme (char '}'))
+    <*> blockParseBetweenBrackets
     <* spaces
     <* string "end"
