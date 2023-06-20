@@ -17,11 +17,8 @@ functionDefinitionParser =
     <*> identifierParser
     <* spaces
     <*> (char '(' *> parametersParser <* spaces <* char ')')
-    <* spaces
-    <*> blockParse
-    <* spaces
-    <*> parseExpression
-    <* spaces
+    <*> (lexeme (char '{') *> spaces *> blockParse <* spaces <* lexeme (char '}'))
+    <*> (string "return" *> spaces *> parseExpression <* spaces)
     <* string "end"
 
 statementParse :: Parser Statement

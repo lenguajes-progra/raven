@@ -97,6 +97,9 @@ data Parameters = Parameters [(Type, Identifier)]
 data FunctionDefinition = FuncDefinition Type Identifier Parameters Block Expression
   deriving (Show)
 
+data FunctionDefinitionList = FuncDefList [FunctionDefinition]
+  deriving (Show)
+
 data ParameterOption
   = ParamLiteral Literal
   | ParamIdentifier Identifier
@@ -119,4 +122,4 @@ data Statement
 
 data LoopStatement = LoopStatement Expression Block deriving (Show)
 
-data Program = Program Block deriving (Show)
+data Program = Program FunctionDefinitionList Block deriving (Show)
