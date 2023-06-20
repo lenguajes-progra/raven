@@ -3,6 +3,16 @@ module Expression where
 import Data.Functor (($>))
 import Function
 import Grammar
+    ( FunctionCall(..),
+      ParametersCalled(..),
+      ParameterOption(..),
+      NumericOperator(..),
+      BitOperator(RightShift, AndBit, OrBit, XorBit, LeftShift),
+      LogicalOperator(Or, And),
+      NumericExpression(..),
+      BitExpression(..),
+      LogicalExpression(..),
+      Expression(..) )
 import Literal
 import Parsers
 import Text.Parsec
