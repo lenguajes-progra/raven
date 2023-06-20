@@ -26,12 +26,12 @@ functionDefinitionParser =
 
 statementParse :: Parser Statement
 statementParse =
-  try (VariableDefinition <$> variableDefinitionParser)
+  try (VariableDefinition <$> try variableDefinitionParser)
     <|> try (ArrayDefinition <$> try arrayDefinitionParser)
     <|> try (IfStat <$> try ifStatementParser)
     <|> try (PrintStat <$> try printStatementParser)
     <|> try (FuncCallStat <$> try parseFunctionCall)
-    <|> try (Expression <$> parseExpression)
+    <|> try (Expression <$> try parseExpression)
     <|> try (End <$> try (char '\n'))
 
 blockParse :: Parser Block

@@ -25,6 +25,10 @@ typeParser =
     <|> try (string "boolean" $> BooleanType)
     <|> try (string "string" $> StringType)
     <|> try (string "function" $> FunctionType)
+
+typeParserArray :: Parser Type
+typeParserArray =
+  try typeParser
     <|> try (ArrayType <$> (spaces *> char '[' >> spaces >> typeParser <* spaces <* char ']'))
 
 variableDefinitionParser :: Parser VariableDefinition
@@ -81,7 +85,7 @@ arrayDefinitionParser =
 
 arrayDefinitionCompleteParser :: Parser ArrayDefinition
 arrayDefinitionCompleteParser =
-  typeParser >>= \dataType ->
+  typeParserArray >>= \dataType ->
     spaces
       >> identifierParser
       >>= \identifier ->
@@ -103,7 +107,7 @@ elementsMatchType (ArrayType tp) (Literals literals) = all (literalMatchesType t
 arrayDefinitionWithoutAssignmentParser :: Parser ArrayDefinition
 arrayDefinitionWithoutAssignmentParser =
   ArrayDefinitionWithoutAssignment
-    <$> typeParser
+    <$> typeParserArray
     <* spaces
     <*> identifierParser
 
