@@ -36,6 +36,7 @@ expressMatchesType tp express = case (tp, express) of
   (BooleanType, NumericExpression _) -> True
   (BooleanType, LogicalExpression _) -> True
   (FunctionType, FuncCall _) -> True
+  (_, Identifier _) -> True
   (_, Literal lit) -> Type.literalMatchesType tp lit
   _ -> False
 

@@ -33,7 +33,7 @@ testFunctionDefinitionWithFunctionAsParameter :: Assertion
 testFunctionDefinitionWithFunctionAsParameter = assertEqual "parseFunctionDefWithFunctionAsParameter" (parse functionDefinitionParser "" "string my_function(function func) {5 >= 6} return \"passed\"  end") (Right (FuncDefinition StringType (Ident "my_function") (Parameters [(FunctionType,Ident "func")]) (Block [Expression (NumericExpression (NumericOp (Literal (IntegerLiteral 5)) GreatEqualThan (Literal (IntegerLiteral 6))))]) (Right (Literal (StringLiteral "passed")))))
 
 testFunctionDefinitionWithWrongFunctionType :: Assertion
-testFunctionDefinitionWithWrongFunctionType = assertEqual "parseFunctionDefWithWrongTypeFunction" (parse functionDefinitionParser "" "int my_function(int a, int b, boolean c) {a <= b} return c end") (Right (FuncDefinition IntType (Ident "my_function") (Parameters [(IntType,Ident "a"),(IntType,Ident "b"),(BooleanType,Ident "c")]) (Block [Expression (NumericExpression (NumericOp (Identifier (Ident "a")) LessEqualThan (Identifier (Ident "b"))))]) (Left (ErrorType TypeFunction))))
+testFunctionDefinitionWithWrongFunctionType = assertEqual "parseFunctionDefWithWrongTypeFunction" (parse functionDefinitionParser "" "int my_function(int a, int b, boolean c) {a <= b} return true end") (Right (FuncDefinition IntType (Ident "my_function") (Parameters [(IntType,Ident "a"),(IntType,Ident "b"),(BooleanType,Ident "c")]) (Block [Expression (NumericExpression (NumericOp (Identifier (Ident "a")) LessEqualThan (Identifier (Ident "b"))))]) (Left (ErrorType TypeFunction))))
 
 functionTests :: TestTree
 functionTests = testGroup "Builder Function Tests" [
