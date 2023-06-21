@@ -55,6 +55,13 @@ testIfProgramParser =
   (parse programParser "" "main() `if(a==b) {print f} else {print c} end` end")
   (Right (Right (Program (FuncDefList []) (Block [IfStat (IfStatement (NumericExpression (NumericOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [PrintStat (PrintStatement (Identifier (Ident "f")))]) (Block [PrintStat (PrintStatement (Identifier (Ident "c")))]))]))))
 
+testWhileProgramParser :: Assertion
+testWhileProgramParser =
+  assertEqual
+  "testWhileProgramParser"
+  (parse programParser "" "main() `while (a==b) {int a = 2} end` end")
+  (Right (Right (Program (FuncDefList []) (Block [LoopStat (LoopStatement (NumericExpression (NumericOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (Right (IntegerLiteral 2)))]))]))))
+
 programTest :: TestTree
 programTest =
   testGroup
@@ -65,5 +72,6 @@ programTest =
       testCase "testProgramParserInvalidAssingIntegerValue" testProgramParserInvalidAssingIntegerValue,
       testCase "testProgramParserInvalidAssingStringValue" testProgramParserInvalidAssingStringValue,
       testCase "testProgramParserInvalidAssingCharValue" testProgramParserInvalidAssingCharValue,
-      testCase "testIfProgramParser" testIfProgramParser
+      testCase "testIfProgramParser" testIfProgramParser,
+      testCase "testWhileProgramParser" testWhileProgramParser
     ]
