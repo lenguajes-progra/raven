@@ -50,6 +50,20 @@ testNumberCharPrintStatementParser =
     (parse printStatementParser "" "print '1'")
     (Right (PrintStatement (Literal (CharacterLiteral '1'))))
 
+testUnitNumberPrintStatementParser :: Assertion
+testUnitNumberPrintStatementParser =
+  assertEqual
+    "testUnitNumberPrintStatementParser"
+    (parse printStatementParser "" "print 1")
+    (Right (PrintStatement (Literal (IntegerLiteral 1))))
+
+testHundredNumberPrintStatementParser :: Assertion
+testHundredNumberPrintStatementParser =
+  assertEqual
+    "testHundredNumberPrintStatementParser"
+    (parse printStatementParser "" "print 1")
+    (Right (PrintStatement (Literal (IntegerLiteral 1))))
+
 printStatementTest :: TestTree
 printStatementTest =
   testGroup
@@ -59,5 +73,7 @@ printStatementTest =
       testCase "testSpecialCharacterStringPrintStatementParser" testSpecialCharacterStringPrintStatementParser,
       testCase "testSpecialCharacterStringSpacePrintStatementParser" testSpecialCharacterStringSpacePrintStatementParser,
       testCase "testCharPrintStatementParser" testCharPrintStatementParser,
-      testCase "testNumberCharPrintStatementParser" testNumberCharPrintStatementParser
+      testCase "testNumberCharPrintStatementParser" testNumberCharPrintStatementParser,
+      testCase "testUnitNumberPrintStatementParser" testUnitNumberPrintStatementParser,
+      testCase "testHundredNumberPrintStatementParser" testHundredNumberPrintStatementParser
     ]
