@@ -48,6 +48,13 @@ testProgramParserInvalidAssingCharValue =
   (parse programParser "" "main() `char a = 1; char b = 2` end")
   (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableDefinitionComplete CharType (Ident "a") (Left (ErrorType AssignType))),VariableDefinition (VariableDefinitionComplete CharType (Ident "b") (Left (ErrorType AssignType)))]))))
 
+testIfProgramParser :: Assertion
+testIfProgramParser = 
+  assertEqual
+  "testIfProgramParser"
+  (parse programParser "" "main() `if(a==b) {print f} else {print c} end` end")
+  (Right (Right (Program (FuncDefList []) (Block [IfStat (IfStatement (NumericExpression (NumericOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [PrintStat (PrintStatement (Identifier (Ident "f")))]) (Block [PrintStat (PrintStatement (Identifier (Ident "c")))]))]))))
+
 programTest :: TestTree
 programTest =
   testGroup
@@ -57,5 +64,6 @@ programTest =
       testCase "testProgramParserAssingCharValue" testProgramParserAssingCharValue,
       testCase "testProgramParserInvalidAssingIntegerValue" testProgramParserInvalidAssingIntegerValue,
       testCase "testProgramParserInvalidAssingStringValue" testProgramParserInvalidAssingStringValue,
-      testCase "testProgramParserInvalidAssingCharValue" testProgramParserInvalidAssingCharValue
+      testCase "testProgramParserInvalidAssingCharValue" testProgramParserInvalidAssingCharValue,
+      testCase "testIfProgramParser" testIfProgramParser
     ]
