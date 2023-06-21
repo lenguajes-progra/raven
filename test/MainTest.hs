@@ -7,6 +7,8 @@ import TypeTest
 import ExpressionTest
 import FunctionTest
 import IfTest
+import PrintStatementTest
+import ProgramTest
 
 main :: IO ()
 main = defaultMain test
@@ -19,4 +21,7 @@ test = testGroup "Builder Tests" [
     TypeTest.typeTests,
     ExpressionTest.expressionTests,
     IfTest.ifTests,
-    FunctionTest.functionTests]
+    FunctionTest.functionTests,
+    PrintStatementTest.printStatementTest,
+    ProgramTest.programTest
+    ]
