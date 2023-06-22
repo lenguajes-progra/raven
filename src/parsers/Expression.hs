@@ -1,7 +1,5 @@
 module Expression where
 
-import Data.Functor (($>))
-import Function
 import Grammar
     ( FunctionCall(..),
       ParametersCalled(..),
@@ -15,9 +13,10 @@ import Grammar
       Expression(..) )
 import Literal
 import Parsers
+import Type
 import Text.Parsec
 import Text.Parsec.String
-import Type
+import Data.Functor (($>))
 
 parseFromTo :: String -> a -> Parser a
 parseFromTo s a = many space >> string s *> many space $> a
@@ -112,7 +111,6 @@ parseLogicalExpression =
     <|> parseLogicalNot
 
 -- !INFO: Parse Expression
-
 parseExpression :: Parser Expression
 parseExpression =
   NumericExpression <$> try parseNumericExpression

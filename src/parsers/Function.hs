@@ -1,11 +1,9 @@
 module Function where
 
 import Grammar
-import Literal
-import Parsers
+import Type
 import Text.Parsec
 import Text.Parsec.String
-import Type
 
 parameterParser :: Parser (Type, Identifier)
 parameterParser = (,) <$> typeParserArray <* spaces <*> identifierParser

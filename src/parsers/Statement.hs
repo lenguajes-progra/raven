@@ -1,13 +1,13 @@
 module Statement where
 
+import Grammar
+import Type
 import Expression
 import Function
-import Grammar
 import Parsers
 import PrintStatement
 import Text.Parsec
 import Text.Parsec.String
-import Type
 
 functionDefinitionParser :: Parser FunctionDefinition
 functionDefinitionParser =
@@ -21,14 +21,12 @@ functionDefinitionParser =
             string "end" >>
             return (FuncDefinition returnType name parameters body exprType)
 
-
 expressParserMatchesType :: Type -> Parser (Either Error Expression)
 expressParserMatchesType tp =
   parseExpression >>= \expr ->
   if expressMatchesType tp expr
   then return (Right expr)
   else return (Left (ErrorType TypeFunction))
-
 
 expressMatchesType :: Type -> Expression -> Bool
 expressMatchesType tp express = case (tp, express) of

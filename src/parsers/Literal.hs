@@ -1,9 +1,8 @@
 module Literal where
 
+import Grammar
 import Text.Parsec
 import Text.Parsec.String
-import Grammar
-
 
 literalParser :: Parser Literal
 literalParser = try integerLiteralParser
