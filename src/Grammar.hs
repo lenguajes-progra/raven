@@ -94,7 +94,7 @@ data Block = Block [Statement]
 data Parameters = Parameters [(Type, Identifier)]
   deriving (Eq, Show)
 
-data FunctionDefinition 
+data FunctionDefinition
   = FuncDefinition Type Identifier Parameters Block (Either Error Expression)
   deriving (Eq, Show)
 
@@ -123,4 +123,4 @@ data Statement
 
 data LoopStatement = LoopStatement Expression Block deriving (Eq, Show)
 
-data Program = Program FunctionDefinitionList Block deriving (Show)
+data Program = Program FunctionDefinitionList Block deriving (Eq, Show)
