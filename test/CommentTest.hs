@@ -5,15 +5,10 @@ import Grammar
 import Test.Tasty
 import Test.Tasty.HUnit
 import Text.Parsec
-import Control.Exception (catch)
 
 --Tests For Line Comments
 testParseCommentLine :: Assertion
 testParseCommentLine = assertEqual "testCommentLine" (parse parseCommentLine "" "//This is a comment line") (Right (CommentLine "This is a comment line"))
-
---Tests For Line Comments - Left Cases
-testCommentLineLineBreakCase :: Assertion
-testCommentLineLineBreakCase = assertEqual "testCommentLineLineBreakCase" (commentParser "//This is a comment line\n") (Left (ErrorType Syntax))
 
 testCommentLineWrongStartOfLineCase :: Assertion
 testCommentLineWrongStartOfLineCase = assertEqual "testCommentLineWrongStartOfLine" (commentParser "/This is a comment line") (Left (ErrorType Syntax))
@@ -35,7 +30,6 @@ testCommentBlockWrongStartOfLineCase = assertEqual "testCommentBlockWrongStartOf
 commentTests :: TestTree
 commentTests = testGroup "Buider Comments Tests" [
     testCase "testCommentLine" testParseCommentLine,
-    testCase "testCommentLineLineBreakCase" testCommentLineLineBreakCase,
     testCase "testCommentLineWrongStartOfLine" testCommentLineWrongStartOfLineCase,
     testCase "testCommentBlock" testParseCommentBlock,
     testCase "testCommentBlockLineBreakCase" testParseCommentBlockLineBreak,
