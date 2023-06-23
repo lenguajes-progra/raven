@@ -30,7 +30,7 @@ expressParserMatchesType tp p bl =
   else return (Left (ErrorType TypeFunction))
 
 expressMatchesType :: Type -> Parameters -> Block -> Expression -> Bool
-expressMatchesType tp p b (Identifier ident) = identMatchesParametersType tp p ident
+expressMatchesType tp p b (Identifier ident) = identMatchesType tp p b ident
 expressMatchesType tp _ _ express = case (tp, express) of
   (IntType, BitExpression _) -> True
   (BooleanType, NumericExpression _) -> True
@@ -38,6 +38,10 @@ expressMatchesType tp _ _ express = case (tp, express) of
   (FunctionType, FuncCall _) -> True
   (_, Literal lit) -> Type.literalMatchesType tp lit
   _ -> False
+
+identMatchesType :: Type -> Parameters -> Block -> Identifier -> Bool
+identMatchesType t p b ident =
+  identMatchesParametersType t p ident || identMatchesBlockType t b ident
 
 identMatchesParametersType :: Type -> Parameters -> Identifier -> Bool
 identMatchesParametersType _ (Parameters []) _ = False
