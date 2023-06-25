@@ -28,15 +28,17 @@ data Type
   deriving (Eq, Show)
 
 data VariableDefinition
-  = VariableDefinitionComplete Type Identifier (Either Error Literal)
+  = VariableDefinitionComplete Type Identifier Literal
   | VariableDefinitionWithoutAssignment Type Identifier
   | VariableDefinitionWithAssignment Identifier Literal
+  | VariableErrorDefinition Error
   deriving (Eq, Show)
 
 data ArrayDefinition
-  = ArrayDefinitionComplete Type Identifier (Either Error ElementList)
+  = ArrayDefinitionComplete Type Identifier ElementList
   | ArrayDefinitionWithoutAssignment Type Identifier
   | ArrayDefinitionWithAssignment Identifier ElementList
+  | ArrayErrorDefinition Error
   deriving (Eq, Show)
 
 data PrintStatement = PrintStatement Expression

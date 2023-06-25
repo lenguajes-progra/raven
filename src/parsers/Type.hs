@@ -44,16 +44,17 @@ variableDefinitionCompleteParser =
       >> identifierParser
       >>= \identifier ->
         spaces
-          >> (char '=' *> spaces *> (try (literalParserMatchesType t) <|> (Left <$> errorParser)))
-          >>= \literal ->
-              return (VariableDefinitionComplete t identifier literal)
+          >> (char '=' *> spaces *> literalParserMatchesType t identifier)
+          >>= \definition ->
+              return definition
 
-literalParserMatchesType :: Type -> Parser (Either Error Literal)
-literalParserMatchesType tp =
+literalParserMatchesType :: Type -> Identifier -> Parser VariableDefinition
+literalParserMatchesType tp ident =
   literalParser >>= \literal ->
     if literalMatchesType tp literal
-      then return (Right literal)
-      else return (Left (ErrorType AssignType))
+      then pure (VariableDefinitionComplete tp ident literal)
+      else pure (VariableErrorDefinition (ErrorType AssignType))
+
 
 literalMatchesType :: Type -> Literal -> Bool
 literalMatchesType tp literal = case (tp, literal) of
@@ -90,16 +91,16 @@ arrayDefinitionCompleteParser =
       >> identifierParser
       >>= \identifier ->
         spaces
-          >> (char '=' *> spaces *> (try (elementListParserMatchesType dataType) <|> (Left <$> errorParser)))
+          >> (char '=' *> spaces *> elementListParserMatchesType dataType identifier)
           >>= \errorOrElements ->
-            return (ArrayDefinitionComplete dataType identifier errorOrElements)
+            return errorOrElements
 
-elementListParserMatchesType :: Type -> Parser (Either Error ElementList)
-elementListParserMatchesType tp =
+elementListParserMatchesType :: Type -> Identifier -> Parser ArrayDefinition
+elementListParserMatchesType tp ident =
   elementListParser >>= \elementList ->
     if elementsMatchType tp elementList
-      then return (Right elementList)
-      else return (Left (ErrorType AssignType))
+      then pure (ArrayDefinitionComplete tp ident elementList)
+      else pure (ArrayErrorDefinition (ErrorType AssignType))
 
 elementsMatchType :: Type -> ElementList -> Bool
 elementsMatchType (ArrayType tp) (Literals literals) = all (literalMatchesType tp) literals
