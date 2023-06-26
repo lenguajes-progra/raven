@@ -13,7 +13,7 @@ commentParser' :: Parser Comment
 commentParser' = try parseCommentLine <|> parseCommentBlock
 
 parseCommentLine :: Parser Comment
-parseCommentLine = CommentLine <$> (string "//" *> manyTill (noneOf "\n") eof)
+parseCommentLine = CommentLine <$> (string "//" *> manyTill anyChar (try newline <|> (eof >> return '\n')))
 
 parseCommentBlock :: Parser Comment
 parseCommentBlock = CommentBlock <$> (string "/*" *> many (noneOf "*") <* string "*/")
