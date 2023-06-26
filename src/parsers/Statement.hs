@@ -17,28 +17,45 @@ functionDefinitionParser =
       spaces >>
       char '(' *> parametersParser <* spaces <* char ')' <* spaces >>= \parameters ->
         char '{' *> spaces *> blockParse <* spaces <* char '}' <* spaces >>= \body ->
-          string "return" *> spaces *> try (expressParserMatchesType returnType) <* spaces >>= \exprType ->
+          string "return" *> spaces *> try (expressParserMatchesType returnType parameters body) <* spaces >>= \exprType ->
             string "end" >>
             return (FuncDefinition returnType name parameters body exprType)
 
 
-expressParserMatchesType :: Type -> Parser (Either Error Expression)
-expressParserMatchesType tp =
+expressParserMatchesType :: Type -> Parameters -> Block -> Parser (Either Error Expression)
+expressParserMatchesType tp p bl =
   parseExpression >>= \expr ->
-  if expressMatchesType tp expr
+  if expressMatchesType tp p bl expr
   then return (Right expr)
   else return (Left (ErrorType TypeFunction))
 
-
-expressMatchesType :: Type -> Expression -> Bool
-expressMatchesType tp express = case (tp, express) of
+expressMatchesType :: Type -> Parameters -> Block -> Expression -> Bool
+expressMatchesType tp p b (Identifier ident) = identMatchesType tp p b ident
+expressMatchesType tp _ _ express = case (tp, express) of
   (IntType, BitExpression _) -> True
   (BooleanType, NumericExpression _) -> True
   (BooleanType, LogicalExpression _) -> True
   (FunctionType, FuncCall _) -> True
-  (_, Identifier _) -> True
   (_, Literal lit) -> Type.literalMatchesType tp lit
   _ -> False
+
+identMatchesType :: Type -> Parameters -> Block -> Identifier -> Bool
+identMatchesType t p b ident =
+  identMatchesParametersType t p ident || identMatchesBlockType t b ident
+
+identMatchesParametersType :: Type -> Parameters -> Identifier -> Bool
+identMatchesParametersType _ (Parameters []) _ = False
+identMatchesParametersType t (Parameters ((tp,iden):ps)) ident
+  | iden == ident && t == tp = True
+  | otherwise = identMatchesParametersType t (Parameters ps) ident
+
+identMatchesBlockType :: Type -> Block -> Identifier -> Bool
+identMatchesBlockType _ (Block []) _ = False
+identMatchesBlockType t (Block (def:bl)) ident =
+  case def of
+    VariableDefinition (VariableDefinitionComplete tp iden _ )-> iden == ident && t == tp
+    VariableDefinition (VariableDefinitionWithoutAssignment tp iden) -> iden == ident && t == tp
+    _ -> identMatchesBlockType t (Block bl) ident
 
 statementParse :: Parser Statement
 statementParse =
