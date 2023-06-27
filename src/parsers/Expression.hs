@@ -3,16 +3,17 @@ module Expression where
 import Data.Functor (($>))
 import Function
 import Grammar
-    ( FunctionCall(..),
-      ParametersCalled(..),
-      ParameterOption(..),
-      NumericOperator(..),
-      BitOperator(RightShift, AndBit, OrBit, XorBit, LeftShift),
-      LogicalOperator(Or, And),
-      NumericExpression(..),
-      BitExpression(..),
-      LogicalExpression(..),
-      Expression(..) )
+  ( BitExpression (..),
+    BitOperator (AndBit, LeftShift, OrBit, RightShift, XorBit),
+    BooleanExpression (..),
+    BooleanOperator (..),
+    Expression (..),
+    FunctionCall (..),
+    LogicalExpression (..),
+    LogicalOperator (And, Or),
+    ParameterOption (..),
+    ParametersCalled (..),
+  )
 import Literal
 import Parsers
 import Text.Parsec
@@ -28,25 +29,25 @@ parseLiteralOrIdentifier =
     <|> lexeme (Identifier <$> try identifierParser)
 
 -- !INFO: Numeric Expression
-parseEqual :: Parser NumericOperator
+parseEqual :: Parser BooleanOperator
 parseEqual = parseFromTo "==" Equal
 
-parseNotEqual :: Parser NumericOperator
+parseNotEqual :: Parser BooleanOperator
 parseNotEqual = parseFromTo "!=" NotEqual
 
-parseLessThan :: Parser NumericOperator
+parseLessThan :: Parser BooleanOperator
 parseLessThan = parseFromTo "<" LessThan
 
-parseGreaterThan :: Parser NumericOperator
+parseGreaterThan :: Parser BooleanOperator
 parseGreaterThan = parseFromTo ">" GreaterThan
 
-parseLessEqualThan :: Parser NumericOperator
+parseLessEqualThan :: Parser BooleanOperator
 parseLessEqualThan = parseFromTo "<=" LessEqualThan
 
-parseGreatEqualThan :: Parser NumericOperator
+parseGreatEqualThan :: Parser BooleanOperator
 parseGreatEqualThan = parseFromTo ">=" GreatEqualThan
 
-parseNumericOperator :: Parser NumericOperator
+parseNumericOperator :: Parser BooleanOperator
 parseNumericOperator =
   try parseEqual
     <|> try parseNotEqual
@@ -55,8 +56,8 @@ parseNumericOperator =
     <|> try parseLessThan
     <|> try parseGreaterThan
 
-parseNumericExpression :: Parser NumericExpression
-parseNumericExpression = NumericOp <$> try term <*> try parseNumericOperator <*> try parseExpression
+parseBooleanExpression :: Parser BooleanExpression
+parseBooleanExpression = BooleanOp <$> try term <*> try parseNumericOperator <*> try parseExpression
 
 -- !INFO: Bit Expression
 parseAndBitOperator :: Parser BitOperator
@@ -115,7 +116,7 @@ parseLogicalExpression =
 
 parseExpression :: Parser Expression
 parseExpression =
-  NumericExpression <$> try parseNumericExpression
+  BooleanExpression <$> try parseBooleanExpression
     <|> LogicalExpression <$> try parseLogicalExpression
     <|> BitExpression <$> try parseBitExpression
     <|> FuncCall <$> try parseFunctionCall
