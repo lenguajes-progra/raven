@@ -14,7 +14,7 @@ testProgramParserAssingIntegerValue =
     (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (IntegerLiteral 2)),VariableDefinition (VariableDefinitionComplete IntType (Ident "b") (IntegerLiteral 1))]))))
 
 testProgramParserAssingStringValue :: Assertion
-testProgramParserAssingStringValue = 
+testProgramParserAssingStringValue =
   assertEqual
   "testProgramParserAssingStringValue"
   (parse programParser "" "main() `string a = \"hello\"; string b = \"world\"` end")
@@ -30,9 +30,9 @@ testProgramParserAssingCharValue =
 testProgramParserInvalidAssingIntegerValue :: Assertion
 testProgramParserInvalidAssingIntegerValue =
   assertEqual
-  "testProgramParserInvalidAssingIntegerValue"
-  (parse programParser "" "main() `int a = a; int b = b` end")
-  (Right (Left (ErrorType Syntax)))
+    "testProgramParserInvalidAssingIntegerValue"
+    (parse programParser "" "main() `int a = a; int b = b` end")
+    (Right (Left (ErrorType Syntax)))
 
 testProgramParserInvalidAssingStringValue :: Assertion
 testProgramParserInvalidAssingStringValue =
@@ -49,11 +49,11 @@ testProgramParserInvalidAssingCharValue =
   (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableErrorDefinition (ErrorType AssignType)),VariableDefinition (VariableErrorDefinition (ErrorType AssignType))]))))
 
 testIfProgramParser :: Assertion
-testIfProgramParser = 
+testIfProgramParser =
   assertEqual
-  "testIfProgramParser"
-  (parse programParser "" "main() `if(a==b) {print f} else {print c} end` end")
-  (Right (Right (Program (FuncDefList []) (Block [IfStat (IfStatement (NumericExpression (NumericOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [PrintStat (PrintStatement (Identifier (Ident "f")))]) (Block [PrintStat (PrintStatement (Identifier (Ident "c")))]))]))))
+    "testIfProgramParser"
+    (parse programParser "" "main() `if(a==b) {print f} else {print c} end` end")
+    (Right (Right (Program (FuncDefList []) (Block [IfStat (IfStatement (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [PrintStat (PrintStatement (Identifier (Ident "f")))]) (Block [PrintStat (PrintStatement (Identifier (Ident "c")))]))]))))
 
 testWhileProgramParser :: Assertion
 testWhileProgramParser =
@@ -65,45 +65,44 @@ testWhileProgramParser =
 testEqualExpressionProgramParser :: Assertion
 testEqualExpressionProgramParser =
   assertEqual
-  "testEqualExpressionProgramParser"
-  (parse programParser "" "main() `a==b` end")
-  (Right (Right (Program (FuncDefList []) (Block [Expression (NumericExpression (NumericOp (Identifier (Ident "a")) Equal (Identifier (Ident "b"))))]))))
+    "testEqualExpressionProgramParser"
+    (parse programParser "" "main() `a==b` end")
+    (Right (Right (Program (FuncDefList []) (Block [Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b"))))]))))
 
 testGreatEqualThanExpressionProgramParser :: Assertion
 testGreatEqualThanExpressionProgramParser =
   assertEqual
-  "testGreatEqualThanExpressionProgramParser"
-  (parse programParser "" "main() `a>=b` end")
-  (Right (Right (Program (FuncDefList []) (Block [Expression (NumericExpression (NumericOp (Identifier (Ident "a")) GreatEqualThan (Identifier (Ident "b"))))]))))
+    "testGreatEqualThanExpressionProgramParser"
+    (parse programParser "" "main() `a>=b` end")
+    (Right (Right (Program (FuncDefList []) (Block [Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) GreatEqualThan (Identifier (Ident "b"))))]))))
 
 testLessEqualThanExpressionProgramParser :: Assertion
 testLessEqualThanExpressionProgramParser =
   assertEqual
-  "testLessEqualThanExpressionProgramParser"
-  (parse programParser "" "main() `a<=b` end")
-  (Right (Right (Program (FuncDefList []) (Block [Expression (NumericExpression (NumericOp (Identifier (Ident "a")) LessEqualThan (Identifier (Ident "b"))))]))))
+    "testLessEqualThanExpressionProgramParser"
+    (parse programParser "" "main() `a<=b` end")
+    (Right (Right (Program (FuncDefList []) (Block [Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) LessEqualThan (Identifier (Ident "b"))))]))))
 
 testNotEqualxpressionProgramParser :: Assertion
 testNotEqualxpressionProgramParser =
   assertEqual
-  "testNotEquaExpressionProgramParser"
-  (parse programParser "" "main() `a!=b` end")
-  (Right (Right (Program (FuncDefList []) (Block [Expression (NumericExpression (NumericOp (Identifier (Ident "a")) NotEqual (Identifier (Ident "b"))))]))))
+    "testNotEquaExpressionProgramParser"
+    (parse programParser "" "main() `a!=b` end")
+    (Right (Right (Program (FuncDefList []) (Block [Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) NotEqual (Identifier (Ident "b"))))]))))
 
 testGreaterThanExpressionProgramParser :: Assertion
 testGreaterThanExpressionProgramParser =
   assertEqual
-  "testGreaterThanExpressionProgramParser"
-  (parse programParser "" "main() `a>b` end")
-  (Right (Right (Program (FuncDefList []) (Block [Expression (NumericExpression (NumericOp (Identifier (Ident "a")) GreaterThan (Identifier (Ident "b"))))]))))
+    "testGreaterThanExpressionProgramParser"
+    (parse programParser "" "main() `a>b` end")
+    (Right (Right (Program (FuncDefList []) (Block [Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) GreaterThan (Identifier (Ident "b"))))]))))
 
 testLessThanExpressionProgramParser :: Assertion
 testLessThanExpressionProgramParser =
   assertEqual
-  "testLessThanExpressionProgramParser"
-  (parse programParser "" "main() `a<b` end")
-  (Right (Right (Program (FuncDefList []) (Block [Expression (NumericExpression (NumericOp (Identifier (Ident "a")) LessThan (Identifier (Ident "b"))))]))))
-
+    "testLessThanExpressionProgramParser"
+    (parse programParser "" "main() `a<b` end")
+    (Right (Right (Program (FuncDefList []) (Block [Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) LessThan (Identifier (Ident "b"))))]))))
 
 programTest :: TestTree
 programTest =
