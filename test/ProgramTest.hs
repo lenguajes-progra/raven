@@ -60,7 +60,7 @@ testWhileProgramParser =
   assertEqual
   "testWhileProgramParser"
   (parse programParser "" "main() `while (a==b) {int a = 2} end` end")
-  (Right (Right (Program (FuncDefList []) (Block [LoopStat (LoopStatement (NumericExpression (NumericOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (IntegerLiteral 2))]))]))))
+  (Right (Right (Program (FuncDefList []) (Block [LoopStat (LoopStatement (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (IntegerLiteral 2))]))]))))
 
 testEqualExpressionProgramParser :: Assertion
 testEqualExpressionProgramParser =
