@@ -49,7 +49,7 @@ data IfStatement = IfStatement Expression Block Block deriving (Eq, Show)
 data Expression
   = Literal Literal
   | Identifier Identifier
-  | NumericExpression NumericExpression
+  | BooleanExpression BooleanExpression
   | LogicalExpression LogicalExpression
   | BitExpression BitExpression
   | Parens Expression
@@ -66,15 +66,15 @@ data BitExpression
   | BitOp Expression BitOperator Expression
   deriving (Eq, Show)
 
-data NumericExpression
-  = NumericOp Expression NumericOperator Expression
+data BooleanExpression
+  = BooleanOp Expression BooleanOperator Expression
   deriving (Eq, Show)
 
 data LogicalOperator = And | Or | Not deriving (Eq, Show)
 
 data BitOperator = AndBit | OrBit | XorBit | RightShift | LeftShift | NotBit deriving (Eq, Show)
 
-data NumericOperator = Equal | NotEqual | LessThan | GreaterThan | LessEqualThan | GreatEqualThan deriving (Eq, Show)
+data BooleanOperator = Equal | NotEqual | LessThan | GreaterThan | LessEqualThan | GreatEqualThan deriving (Eq, Show)
 
 data Error = ErrorType ErrorType deriving (Eq, Show)
 

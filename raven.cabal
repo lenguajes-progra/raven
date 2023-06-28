@@ -69,8 +69,10 @@ test-suite raven-test
       ErrorTest
       ExpressionTest
       FunctionTest
-      IfTest
       LiteralTest
+      PrintStatementTest
+      ProgramTest
+      StatementTest
       TypeTest
       Paths_raven
   hs-source-dirs:
