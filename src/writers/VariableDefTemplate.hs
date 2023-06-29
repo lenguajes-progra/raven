@@ -1,10 +1,6 @@
 module VariableDefTemplate where
 
 import Grammar
-    ( VariableDefinition( .. ),
-      Type(..),
-      Identifier(..),
-      Literal( .. ), FunctionDefinition (FuncDefinition) )
 import Data.List
 
 variableDefinitionTemplate :: String -> String -> String -> String
@@ -28,10 +24,15 @@ identifierTransformer :: Identifier -> String
 identifierTransformer (Ident a) = takeWhile (/= '\"') (tail (show a))
 
 functionTypeTemplate :: (String, String) -> [String] -> [String] -> String
-functionTypeTemplate (identifier, typ) parameters block = identifier ++ " :: " ++ intercalate " -> " parameters ++ " -> " ++ typ 
+functionTypeTemplate (typ, identifier) parameters block = identifier ++ " :: " ++ intercalate " -> " parameters ++ " -> " ++ typ 
 
 functionDefinitionTemplate :: String -> [String] -> String -> String
 functionDefinitionTemplate identifier parameters expression = identifier ++ " " ++ intercalate " " parameters ++ " = " ++ expression
 
 functionTransformer :: FunctionDefinition -> (String, [String], String)
-functionTransformer (FuncDefinition typ identifier parameters block expression) = (identifierTransformer identifier, map show parameters, show expression)
+functionTransformer (FuncDefinition typ identifier parameters block expression) = (identifierTransformer identifier, parametersTransformer parameters, show expression)
+
+parametersTransformer :: Parameters -> [String]
+parametersTransformer (Parameters []) = []
+parametersTransformer (Parameters ((typ, identifierParameter):ps)) = identifierTransformer identifierParameter:parametersTransformer (Parameters ps)
+
