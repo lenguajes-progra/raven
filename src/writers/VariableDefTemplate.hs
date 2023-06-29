@@ -2,14 +2,15 @@ module VariableDefTemplate where
 
 import Grammar
 import Data.List
+import LiteralTemplate
 
 variableDefinitionTemplate :: String -> String -> String -> String
 variableDefinitionTemplate typ identifier literal = identifier ++ " :: " ++ typ ++ "\n" ++ identifier ++ " = " ++ literal
 
 variableDefinitionTransformer :: VariableDefinition -> (String, String, String)
-variableDefinitionTransformer (VariableDefinitionComplete typ identifier literal) = (typeTransformer typ, identifierTransformer identifier, show literal)
+variableDefinitionTransformer (VariableDefinitionComplete typ identifier literal) = (typeTransformer typ, identifierTransformer identifier, literalTransformer literal)
 variableDefinitionTransformer (VariableDefinitionWithoutAssignment typ identifier) = (typeTransformer typ, identifierTransformer identifier, "")
-variableDefinitionTransformer (VariableDefinitionWithAssignment identifier literal) = (identifierTransformer identifier, show literal, "")
+variableDefinitionTransformer (VariableDefinitionWithAssignment identifier literal) = ("", identifierTransformer identifier, literalTransformer literal)
 
 typeTransformer :: Type -> String
 typeTransformer word = case word of
@@ -34,5 +35,7 @@ functionTransformer (FuncDefinition typ identifier parameters block expression) 
 
 parametersTransformer :: Parameters -> [String]
 parametersTransformer (Parameters []) = []
-parametersTransformer (Parameters ((typ, identifierParameter):ps)) = identifierTransformer identifierParameter:parametersTransformer (Parameters ps)
+parametersTransformer (Parameters ((_, identifierParameter):ps)) = identifierTransformer identifierParameter:parametersTransformer (Parameters ps)
+
+
 
