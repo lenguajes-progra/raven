@@ -1,7 +1,6 @@
 module Type where
 
 import Data.Functor (($>))
-import Error
 import Grammar
 import Literal
 import Text.Parsec
@@ -31,53 +30,7 @@ typeParserArray =
   try typeParser
     <|> try (ArrayType <$> (spaces *> char '[' >> spaces >> typeParser <* spaces <* char ']'))
 
-variableDefinitionParser :: Parser VariableDefinition
-variableDefinitionParser =
-  try variableDefinitionCompleteParser
-    <|> try variableDefinitionWithoutAssignmentParser
-    <|> try variableDefinitionWithAssignmentParser
-
-variableDefinitionCompleteParser :: Parser VariableDefinition
-variableDefinitionCompleteParser =
-  typeParser >>= \t ->
-    spaces
-      >> identifierParser
-      >>= \identifier ->
-        spaces
-          >> (char '=' *> spaces *> literalParserMatchesType t identifier)
-          >>= \definition ->
-              return definition
-
-literalParserMatchesType :: Type -> Identifier -> Parser VariableDefinition
-literalParserMatchesType tp ident =
-  literalParser >>= \literal ->
-    if literalMatchesType tp literal
-      then pure (VariableDefinitionComplete tp ident literal)
-      else pure (VariableErrorDefinition (ErrorType AssignType))
-
-
-literalMatchesType :: Type -> Literal -> Bool
-literalMatchesType tp literal = case (tp, literal) of
-  (IntType, IntegerLiteral _) -> True
-  (CharType, CharacterLiteral _) -> True
-  (BooleanType, BooleanLiteral _) -> True
-  (StringType, StringLiteral _) -> True
-  _ -> False
-
-variableDefinitionWithoutAssignmentParser :: Parser VariableDefinition
-variableDefinitionWithoutAssignmentParser =
-  VariableDefinitionWithoutAssignment
-    <$> typeParser
-    <* spaces
-    <*> identifierParser
-
-variableDefinitionWithAssignmentParser :: Parser VariableDefinition
-variableDefinitionWithAssignmentParser =
-  VariableDefinitionWithAssignment
-    <$> identifierParser
-    <* spaces
-    <*> (char '=' *> spaces *> literalParser)
-
+-- Array definition
 arrayDefinitionParser :: Parser ArrayDefinition
 arrayDefinitionParser =
   try arrayDefinitionCompleteParser
@@ -94,6 +47,14 @@ arrayDefinitionCompleteParser =
           >> (char '=' *> spaces *> elementListParserMatchesType dataType identifier)
           >>= \errorOrElements ->
             return errorOrElements
+
+literalMatchesType :: Type -> Literal -> Bool
+literalMatchesType tp literal = case (tp, literal) of
+  (IntType, IntegerLiteral _) -> True
+  (CharType, CharacterLiteral _) -> True
+  (BooleanType, BooleanLiteral _) -> True
+  (StringType, StringLiteral _) -> True
+  _ -> False
 
 elementListParserMatchesType :: Type -> Identifier -> Parser ArrayDefinition
 elementListParserMatchesType tp ident =

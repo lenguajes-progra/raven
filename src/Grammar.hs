@@ -28,9 +28,9 @@ data Type
   deriving (Eq, Show)
 
 data VariableDefinition
-  = VariableDefinitionComplete Type Identifier Literal
+  = VariableDefinitionComplete Type Identifier Expression
   | VariableDefinitionWithoutAssignment Type Identifier
-  | VariableDefinitionWithAssignment Identifier Literal
+  | VariableDefinitionWithAssignment Identifier Expression
   | VariableErrorDefinition Error
   deriving (Eq, Show)
 
