@@ -58,12 +58,12 @@ logicOpTransformer s = case s of
   Not -> "!"
 
 logicExpressionTransformer :: LogicalExpression -> String
-logicExpressionTransformer (LogicNot expr) = logicOpTransformer Not ++ termTransformer expr
+logicExpressionTransformer (LogicNot expr) = logicOpTransformer Not ++ termLogicTransformer expr
 logicExpressionTransformer (LogicOp leftExpr logicOp rightExpr) =
   termLogicTransformer leftExpr ++ logicOpTransformer logicOp ++ termLogicTransformer rightExpr
 
 throwLogicError :: a
-throwLogicError = error "only logical operations are allowed"
+throwLogicError = error "Only logical operations are allowed"
 
 termLogicTransformer :: Expression -> String
 termLogicTransformer (Literal (BooleanLiteral bl)) = show bl
