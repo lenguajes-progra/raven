@@ -11,21 +11,21 @@ testProgramParserAssingIntegerValue =
   assertEqual
     "testProgramParserAssingIntegerValue"
     (parse programParser "" "main() `int a = 2; int b = 1` end")
-    (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (IntegerLiteral 2)),VariableDefinition (VariableDefinitionComplete IntType (Ident "b") (IntegerLiteral 1))]))))
+    (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (Literal (IntegerLiteral 2))),VariableDefinition (VariableDefinitionComplete IntType (Ident "b") (Literal (IntegerLiteral 1)))]))))
 
 testProgramParserAssingStringValue :: Assertion
 testProgramParserAssingStringValue =
   assertEqual
   "testProgramParserAssingStringValue"
   (parse programParser "" "main() `string a = \"hello\"; string b = \"world\"` end")
-  (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableDefinitionComplete StringType (Ident "a") (StringLiteral "hello")),VariableDefinition (VariableDefinitionComplete StringType (Ident "b") (StringLiteral "world"))]))))
+  (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableDefinitionComplete StringType (Ident "a") (Literal (StringLiteral "hello"))),VariableDefinition (VariableDefinitionComplete StringType (Ident "b") (Literal (StringLiteral "world")))]))))
 
 testProgramParserAssingCharValue :: Assertion
 testProgramParserAssingCharValue =
   assertEqual
   "testProgramParserAssingCharValue"
   (parse programParser "" "main() `char a = 'a'; char b = 'a'` end")
-  (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableDefinitionComplete CharType (Ident "a") (CharacterLiteral 'a')),VariableDefinition (VariableDefinitionComplete CharType (Ident "b") (CharacterLiteral 'a'))]))))
+  (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableDefinitionComplete CharType (Ident "a") (Literal (CharacterLiteral 'a'))),VariableDefinition (VariableDefinitionComplete CharType (Ident "b") (Literal (CharacterLiteral 'a')))]))))
 
 testProgramParserInvalidAssingIntegerValue :: Assertion
 testProgramParserInvalidAssingIntegerValue =
@@ -60,7 +60,7 @@ testWhileProgramParser =
   assertEqual
   "testWhileProgramParser"
   (parse programParser "" "main() `while (a==b) {int a = 2} end` end")
-  (Right (Right (Program (FuncDefList []) (Block [LoopStat (LoopStatement (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (IntegerLiteral 2))]))]))))
+  (Right (Right (Program (FuncDefList []) (Block [LoopStat (LoopStatement (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (Literal(IntegerLiteral 2)))]))]))))
 
 testEqualExpressionProgramParser :: Assertion
 testEqualExpressionProgramParser =
