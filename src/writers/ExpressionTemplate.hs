@@ -55,10 +55,10 @@ logicOpTransformer :: LogicalOperator -> String
 logicOpTransformer s = case s of
   And -> "&&"
   Or -> "||"
-  Not -> "!"
+  Not -> "not "
 
 logicExpressionTransformer :: LogicalExpression -> String
-logicExpressionTransformer (LogicNot expr) = logicOpTransformer Not ++ termLogicTransformer expr
+logicExpressionTransformer (LogicNot expr) = "(" ++ logicOpTransformer Not ++ termLogicTransformer expr ++ ")"
 logicExpressionTransformer (LogicOp leftExpr logicOp rightExpr) =
   termLogicTransformer leftExpr ++ logicOpTransformer logicOp ++ termLogicTransformer rightExpr
 
