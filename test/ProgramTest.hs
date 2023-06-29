@@ -31,7 +31,7 @@ testProgramParserInvalidAssingIntegerValue :: Assertion
 testProgramParserInvalidAssingIntegerValue =
   assertEqual
     "testProgramParserInvalidAssingIntegerValue"
-    (parse programParser "" "main() `int a = a; int b = b` end")
+    (parse programParser "" "main() `int a = a; int b = b` ")
     (Right (Left (ErrorType Syntax)))
 
 testProgramParserInvalidAssingStringValue :: Assertion
