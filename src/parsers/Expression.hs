@@ -140,7 +140,7 @@ expressionMatchesType tp literal = case (tp, literal) of
   (CharType, Literal (CharacterLiteral _)) -> True
   (BooleanType, Literal (BooleanLiteral _)) -> True
   (StringType, Literal (StringLiteral _)) -> True
-  (IntType, BooleanExpression _) -> True
+  (BooleanType, BooleanExpression _) -> True
   (BooleanType, LogicalExpression _) -> True
   (IntType, BitExpression _) -> True
   _ -> False
