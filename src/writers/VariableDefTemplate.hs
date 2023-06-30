@@ -4,6 +4,7 @@ import Grammar
 import Data.List
 import LiteralTemplate
 import PrintStatementTemplate (expressionTransformer)
+import DataTransformer
 
 variableDefinitionTemplate :: String -> String -> String -> String
 variableDefinitionTemplate typ identifier literal = identifier ++ " :: " ++ typ ++ "\n" ++ identifier ++ " = " ++ literal
@@ -12,10 +13,6 @@ variableDefinitionTransformer :: VariableDefinition -> VariableType
 variableDefinitionTransformer (VariableDefinitionComplete typ identifier expression) = TriNode (typeTransformer typ) (identifierTransformer identifier) (expressionTransformer expression)
 variableDefinitionTransformer (VariableDefinitionWithoutAssignment typ identifier) = TwiceNode (typeTransformer typ) (identifierTransformer identifier)
 variableDefinitionTransformer (VariableDefinitionWithAssignment identifier expression) = TwiceNode (identifierTransformer identifier) (expressionTransformer expression)
-
-data VariableType = TriNode String String String
-                  | TwiceNode String String
-                  deriving (Show)
 
 typeTransformer :: Type -> String
 typeTransformer word = case word of
