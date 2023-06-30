@@ -117,12 +117,12 @@ data Statement
   | VariableDefinition VariableDefinition
   | ArrayDefinition ArrayDefinition
   | IfStat IfStatement
-  | LoopStat LoopStatement
+  | ForStat ForStatement
   | PrintStat PrintStatement
   | FuncCallStat FunctionCall
   | End Char
   deriving (Eq, Show)
 
-data LoopStatement = LoopStatement Expression Block deriving (Eq, Show)
+data ForStatement = ForStatement Expression Expression Block deriving (Eq, Show)
 
 data Program = Program FunctionDefinitionList Block deriving (Eq, Show)
