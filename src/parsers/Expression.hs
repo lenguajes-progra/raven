@@ -1,19 +1,7 @@
 module Expression where
 
 import Data.Functor (($>))
-import Function
 import Grammar
-  ( BitExpression (..),
-    BitOperator (AndBit, LeftShift, OrBit, RightShift, XorBit),
-    BooleanExpression (..),
-    BooleanOperator (..),
-    Expression (..),
-    FunctionCall (..),
-    LogicalExpression (..),
-    LogicalOperator (And, Or),
-    ParameterOption (..),
-    ParametersCalled (..),
-  )
 import Literal
 import Parsers
 import Text.Parsec
@@ -127,6 +115,56 @@ term = try parseLiteralOrIdentifier <|> try parens
 
 parens :: Parser Expression
 parens = Parens <$> betweenParens parseExpression
+
+-- Variable parser
+variableDefinitionParser :: Parser VariableDefinition
+variableDefinitionParser =
+  try variableDefinitionCompleteParser
+    <|> try variableDefinitionWithoutAssignmentParser
+    <|> try variableDefinitionWithAssignmentParser
+
+variableDefinitionCompleteParser :: Parser VariableDefinition
+variableDefinitionCompleteParser =
+  typeParser >>= \t ->
+    spaces
+      >> identifierParser
+      >>= \identifier ->
+        spaces
+        >> (char '=' *> spaces *> expressionParserMatchesType t identifier)
+        >>= \definition ->
+          return definition
+
+expressionMatchesType :: Type -> Expression -> Bool
+expressionMatchesType tp literal = case (tp, literal) of
+  (IntType, Literal (IntegerLiteral _)) -> True
+  (CharType, Literal (CharacterLiteral _)) -> True
+  (BooleanType, Literal (BooleanLiteral _)) -> True
+  (StringType, Literal (StringLiteral _)) -> True
+  (BooleanType, BooleanExpression _) -> True
+  (BooleanType, LogicalExpression _) -> True
+  (IntType, BitExpression _) -> True
+  _ -> False
+
+expressionParserMatchesType :: Type -> Identifier -> Parser VariableDefinition
+expressionParserMatchesType tp ident =
+  parseExpression >>= \expression ->
+    if expressionMatchesType tp expression
+      then pure (VariableDefinitionComplete tp ident expression)
+      else pure (VariableErrorDefinition (ErrorType AssignType))
+
+variableDefinitionWithoutAssignmentParser :: Parser VariableDefinition
+variableDefinitionWithoutAssignmentParser =
+  VariableDefinitionWithoutAssignment
+    <$> typeParser
+    <* spaces
+    <*> identifierParser
+
+variableDefinitionWithAssignmentParser :: Parser VariableDefinition
+variableDefinitionWithAssignmentParser =
+  VariableDefinitionWithAssignment
+    <$> identifierParser
+    <* spaces
+    <*> (char '=' *> spaces *> parseExpression)
 
 -- !INFO: Function Parser
 parseParameterOption :: Parser ParameterOption

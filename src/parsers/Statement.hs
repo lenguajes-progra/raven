@@ -19,16 +19,16 @@ functionDefinitionParser =
           >> char '(' *> parametersParser <* spaces <* char ')' <* spaces
           >>= \parameters ->
             char '{' *> spaces *> blockParse <* spaces <* char '}' <* spaces >>= \body ->
-              string "return" *> spaces *> try (expressParserMatchesType returnType parameters body) <* spaces >>= \exprType ->
+              string "return" *> spaces *> try (expressParserMatchesType returnType name parameters body) <* spaces >>= \definition ->
                 string "end"
-                  >> return (FuncDefinition returnType name parameters body exprType)
+                  >> return definition
 
-expressParserMatchesType :: Type -> Parameters -> Block -> Parser (Either Error Expression)
-expressParserMatchesType tp p bl =
+expressParserMatchesType :: Type -> Identifier -> Parameters -> Block -> Parser FunctionDefinition
+expressParserMatchesType tp ident p bl =
   parseExpression >>= \expr ->
     if expressMatchesType tp p bl expr
-      then return (Right expr)
-      else return (Left (ErrorType TypeFunction))
+      then pure (FuncDefinition tp ident p bl expr)
+      else return (FuncDefinitionError (ErrorType TypeFunction))
 
 expressMatchesType :: Type -> Parameters -> Block -> Expression -> Bool
 expressMatchesType tp p b (Identifier ident) = identMatchesType tp p b ident

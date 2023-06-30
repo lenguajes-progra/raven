@@ -28,9 +28,9 @@ data Type
   deriving (Eq, Show)
 
 data VariableDefinition
-  = VariableDefinitionComplete Type Identifier Literal
+  = VariableDefinitionComplete Type Identifier Expression
   | VariableDefinitionWithoutAssignment Type Identifier
-  | VariableDefinitionWithAssignment Identifier Literal
+  | VariableDefinitionWithAssignment Identifier Expression
   | VariableErrorDefinition Error
   deriving (Eq, Show)
 
@@ -97,7 +97,8 @@ data Parameters = Parameters [(Type, Identifier)]
   deriving (Eq, Show)
 
 data FunctionDefinition
-  = FuncDefinition Type Identifier Parameters Block (Either Error Expression)
+  = FuncDefinition Type Identifier Parameters Block Expression
+  | FuncDefinitionError Error
   deriving (Eq, Show)
 
 data FunctionDefinitionList = FuncDefList [FunctionDefinition]

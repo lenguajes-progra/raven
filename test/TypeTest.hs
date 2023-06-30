@@ -4,13 +4,14 @@ import Literal
 import Grammar
 import Error
 import Type
+import Expression
 import Test.Tasty
 import Test.Tasty.HUnit
 import Text.Parsec
 import Control.Exception (catch)
 
 testVariableDefinitionParserWithAssignment :: Assertion
-testVariableDefinitionParserWithAssignment = assertEqual "parseVariableDefinitionWithAssignment" (parse variableDefinitionParser "" "int a = 1;") (Right (VariableDefinitionComplete IntType (Ident "a") (IntegerLiteral 1)))
+testVariableDefinitionParserWithAssignment = assertEqual "parseVariableDefinitionWithAssignment" (parse variableDefinitionParser "" "int a = 1;") (Right (VariableDefinitionComplete IntType (Ident "a") (Literal (IntegerLiteral 1))))
 
 testVariableDefinitionParserWithoutAssignment :: Assertion
 testVariableDefinitionParserWithoutAssignment = assertEqual "parseVariableDefinitionWithoutAssignment" (parse variableDefinitionParser "" "int a;") (Right (VariableDefinitionWithoutAssignment IntType (Ident "a")))

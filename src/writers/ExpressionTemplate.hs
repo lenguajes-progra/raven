@@ -1,10 +1,7 @@
 module ExpressionTemplate where
 
-import Expression
 import Grammar
-import LiteralTemplate (literalTemplate)
-import Parsers
-import VariableDefTemplate (identifierTransformer)
+import LiteralTypeTemplate
 
 termBitAndBoolTransformer :: Expression -> String
 termBitAndBoolTransformer (Literal (IntegerLiteral il)) = show il
@@ -89,7 +86,7 @@ expressionTransformer (BitExpression be) = bitExpressionTransformer be
 expressionTransformer expr = termTransformer expr
 
 termTransformer :: Expression -> String
-termTransformer (Literal lit) = literalTemplate lit
+termTransformer (Literal lit) = literalTransformer lit
 termTransformer (Identifier iden) = identifierTransformer iden
 termTransformer (Parens expr) = putParens (expressionTransformer expr)
 termTransformer _ = throwBitError
