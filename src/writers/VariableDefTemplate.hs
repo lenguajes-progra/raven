@@ -2,9 +2,9 @@ module VariableDefTemplate where
 
 import Grammar
 import Data.List
-import LiteralTemplate
-import PrintStatementTemplate (expressionTransformer)
 import DataTransformer
+import LiteralTypeTemplate
+import ExpressionTemplate
 
 variableDefinitionTemplate :: String -> String -> String -> String
 variableDefinitionTemplate typ identifier literal = identifier ++ " :: " ++ typ ++ "\n" ++ identifier ++ " = " ++ literal
@@ -13,18 +13,6 @@ variableDefinitionTransformer :: VariableDefinition -> VariableType
 variableDefinitionTransformer (VariableDefinitionComplete typ identifier expression) = TriNode (typeTransformer typ) (identifierTransformer identifier) (expressionTransformer expression)
 variableDefinitionTransformer (VariableDefinitionWithoutAssignment typ identifier) = TwiceNode (typeTransformer typ) (identifierTransformer identifier)
 variableDefinitionTransformer (VariableDefinitionWithAssignment identifier expression) = TwiceNode (identifierTransformer identifier) (expressionTransformer expression)
-
-typeTransformer :: Type -> String
-typeTransformer word = case word of
-    IntType -> "Int"
-    CharType -> "Char"
-    BooleanType -> "Bool"
-    StringType -> "String"
-    FunctionType -> "(" ++ "Function" ++ ")"
-    (ArrayType a) -> "[" ++ typeTransformer a ++ "]"
-
-identifierTransformer :: Identifier -> String
-identifierTransformer (Ident a) = takeWhile (/= '\"') (tail (show a))
 
 functionTypeTemplate :: (String, String) -> [String] -> [String] -> String
 functionTypeTemplate (typ, identifier) parameters block = identifier ++ " :: " ++ intercalate " -> " parameters ++ " -> " ++ typ 

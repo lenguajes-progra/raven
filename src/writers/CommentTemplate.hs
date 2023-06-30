@@ -2,8 +2,8 @@ module CommentTemplate where
 
 import Grammar
 
-commetTemplate :: String -> String
-commetTemplate exp = exp
+commentTemplate :: String -> String
+commentTemplate exp = exp
 
 commentTransformer :: Comment -> String
 commentTransformer exp = case exp of

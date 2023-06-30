@@ -1,8 +1,8 @@
 module ArrayDefinitionTemplate where
 
 import Grammar
-import LiteralTemplate
 import DataTransformer
+import LiteralTypeTemplate
 
 arrayTemplate :: String -> String -> String -> String
 arrayTemplate arrType name exp = name ++ "::" ++ "[" ++ arrType ++ "]" ++ " \n " ++ name ++ "=" ++ exp
@@ -22,14 +22,3 @@ arrayDefinitionTransformer (ArrayDefinitionComplete arrType identifier elementLi
 arrayDefinitionTransformer (ArrayDefinitionWithoutAssignment arrType identifier) = TwiceNode (typeTransformer arrType) (identifierTransformer identifier)
 arrayDefinitionTransformer (ArrayDefinitionWithAssignment identifier elementList) = TwiceNode (identifierTransformer identifier) (elementListTransformer elementList)
 
-typeTransformer :: Type -> String
-typeTransformer word = case word of
-  IntType -> "Int"
-  CharType -> "Char"
-  BooleanType -> "Bool"
-  StringType -> "String"
-  FunctionType -> "(" ++ "Function" ++ ")"
-  (ArrayType a) -> "[" ++ typeTransformer a ++ "]"
-
-identifierTransformer :: Identifier -> String
-identifierTransformer (Ident a) = takeWhile (/= '\"') (tail (show a))
