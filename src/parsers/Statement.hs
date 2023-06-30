@@ -63,7 +63,7 @@ statementParse =
   try (VariableDefinition <$> try variableDefinitionParser)
     <|> try (ArrayDefinition <$> try arrayDefinitionParser)
     <|> try (IfStat <$> try ifStatementParser)
-    <|> try (LoopStat <$> try loopStatementParser)
+    <|> try (ForStat <$> try forStatementParser)
     <|> try (PrintStat <$> try printStatementParser)
     <|> try (FuncCallStat <$> try parseFunctionCall)
     <|> try (Expression <$> try parseExpression)
@@ -84,10 +84,12 @@ ifStatementParser =
 blockParseBetweenBrackets :: Parser Block
 blockParseBetweenBrackets = between (lexeme (char '{')) (lexeme (char '}')) (spaces *> blockParse <* spaces)
 
-loopStatementParser :: Parser LoopStatement
-loopStatementParser =
-  LoopStatement
-    <$> (string "while" *> spaces *> char '(' *> parseExpression <* char ')')
+forStatementParser :: Parser ForStatement
+forStatementParser =
+  ForStatement
+    <$> (string "for" *> spaces *> char '(' *> parseLiteralOrIdentifier <* char ';')
+    <*> parseExpression <* spaces
+    <* char ')'
     <*> blockParseBetweenBrackets
     <* spaces
     <* string "end"
