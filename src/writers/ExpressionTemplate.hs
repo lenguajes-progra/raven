@@ -94,7 +94,7 @@ termTransformer _ = throwBitError
 -- ! Function Call
 
 parameterOption :: ParameterOption -> String
-parameterOption (ParamLiteral literal) = literalTemplate literal
+parameterOption (ParamLiteral literal) = literalTransformer literal
 parameterOption (ParamIdentifier ident) = identifierTransformer ident
 
 functionCallTransformer :: FunctionCall -> String
