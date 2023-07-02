@@ -6,6 +6,7 @@ import ExpressionTemplate
 import Grammar
 import PrintStatementTemplate
 import VariableDefTemplate
+import IfTemplate 
 
 dataTransformer :: VariableType -> (String -> String -> String -> String) -> String
 dataTransformer (TriNode tp ident expr) f = f tp ident expr
@@ -22,4 +23,6 @@ statementTransformer (FuncCallStat fcs) =
   functionCallTransformer fcs
 statementTransformer (Expression expr) =
   expressionTransformer expr
+statementTransformer (IfStat is) =
+  ifTransformer is
 statementTransformer _ = ""
