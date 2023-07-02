@@ -66,7 +66,6 @@ statementParse =
     <|> try (ForStat <$> try forStatementParser)
     <|> try (PrintStat <$> try printStatementParser)
     <|> try (FuncCallStat <$> try parseFunctionCall)
-    <|> try (Expression <$> try parseExpression)
     <|> try (End <$> try (char '\n'))
 
 blockParse :: Parser Block

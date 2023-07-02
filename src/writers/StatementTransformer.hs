@@ -1,4 +1,4 @@
-module StatmentTransformer where
+module StatementTransformer where
 
 import ArrayDefinitionTemplate
 import DataTransformer
@@ -6,7 +6,8 @@ import ExpressionTemplate
 import Grammar
 import PrintStatementTemplate
 import VariableDefTemplate
-import IfTemplate 
+import IfTemplate
+import LoopTemplate
 
 dataTransformer :: VariableType -> (String -> String -> String -> String) -> String
 dataTransformer (TriNode tp ident expr) f = f tp ident expr
@@ -21,8 +22,9 @@ statementTransformer (PrintStat ps) =
   printStatementTransformer ps
 statementTransformer (FuncCallStat fcs) =
   functionCallTransformer fcs
-statementTransformer (Expression expr) =
-  expressionTransformer expr
 statementTransformer (IfStat is) =
   ifTransformer is
+statementTransformer (ForStat for) =
+  loopTransformer for
 statementTransformer _ = ""
+

@@ -21,4 +21,4 @@ arrayDefinitionTransformer :: ArrayDefinition -> VariableType
 arrayDefinitionTransformer (ArrayDefinitionComplete arrType identifier elementList) = TriNode (typeTransformer arrType) (identifierTransformer identifier) (elementListTransformer elementList)
 arrayDefinitionTransformer (ArrayDefinitionWithoutAssignment arrType identifier) = TwiceNode (typeTransformer arrType) (identifierTransformer identifier)
 arrayDefinitionTransformer (ArrayDefinitionWithAssignment identifier elementList) = TwiceNode (identifierTransformer identifier) (elementListTransformer elementList)
-
+arrayDefinitionTransformer _ = undefined

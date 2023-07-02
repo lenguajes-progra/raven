@@ -114,8 +114,7 @@ newtype ParametersCalled = ParametersCalled [ParameterOption] deriving (Eq, Show
 data FunctionCall = FunctionCall Identifier ParametersCalled deriving (Eq, Show)
 
 data Statement
-  = Expression Expression
-  | VariableDefinition VariableDefinition
+  = VariableDefinition VariableDefinition
   | ArrayDefinition ArrayDefinition
   | IfStat IfStatement
   | ForStat ForStatement
