@@ -5,12 +5,12 @@ import DataTransformer
 import LiteralTypeTemplate
 
 arrayTemplate :: String -> String -> String -> String
-arrayTemplate arrType name exp = name ++ "::" ++ "[" ++ arrType ++ "]" ++ " \n " ++ name ++ "=" ++ exp
+arrayTemplate arrType name exp = name ++ "::" ++ arrType ++ " \n " ++ name ++ "=" ++ exp
 
 elementListTransformer' :: ElementList -> String
 elementListTransformer' (Literals []) = ""
 elementListTransformer' (Literals (arr : as)) =
-  if length as == 0
+  if null as
     then literalTransformer arr
     else literalTransformer arr ++ ", " ++ elementListTransformer' (Literals as)
 

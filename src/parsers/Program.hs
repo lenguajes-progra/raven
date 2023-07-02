@@ -11,15 +11,9 @@ functionsDefinitionParser = FuncDefList <$> functionDefinitionParser `sepBy` (ch
 
 programParser :: Parser (Either Error Program)
 programParser =
-  try (Right <$> (Program
-    <$> functionsDefinitionParser 
-    <*> ( lexeme (string "main()")
-            *> lexeme (char '`')
-            *>  blockParse
-            <* lexeme (char '`')
-        )
-    <* string "end"))
-    <|> (Left <$> pure (ErrorType Syntax))
+  try
+    (Right <$> (Program <$> functionsDefinitionParser))
+    <|> pure (Left (ErrorType Syntax))
 
 textReader :: IO ()
 textReader = do

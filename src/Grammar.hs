@@ -44,7 +44,7 @@ data ArrayDefinition
 data PrintStatement = PrintStatement Expression
   deriving (Eq, Show)
 
-data IfStatement = IfStatement Expression Block Block deriving (Eq, Show)
+data IfStatement = IfStatement Expression Expression Expression deriving (Eq, Show)
 
 data Expression
   = Literal Literal
@@ -124,6 +124,6 @@ data Statement
   | End Char
   deriving (Eq, Show)
 
-data ForStatement = ForStatement Expression Expression Block deriving (Eq, Show)
+data ForStatement = ForStatement Expression Expression Expression deriving (Eq, Show)
 
-data Program = Program FunctionDefinitionList Block deriving (Eq, Show)
+data Program = Program FunctionDefinitionList deriving (Eq, Show)

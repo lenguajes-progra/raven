@@ -1,1 +1,2 @@
-main() `a>=b; int a = 2;if(a==b) {while (a==b) {int a = 2} end} else {print f} end` end
+int hello(int a, int b) {int ab =2; if(c > d) {a == b} else { a | b} end} return ab end
+boolean hello2() {boolean b = true} return b end
