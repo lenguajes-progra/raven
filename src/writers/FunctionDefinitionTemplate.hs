@@ -3,18 +3,22 @@ module FunctionDefinitionTemplate where
 import Grammar
 import LiteralTypeTemplate
 import Data.List
+import ExpressionTemplate
 
-functionTypeTemplate :: (String, String) -> [String] -> [String] -> String
-functionTypeTemplate (typ, identifier) parameters block = identifier ++ " :: " ++ intercalate " -> " parameters ++ " -> " ++ typ 
+functionTypeTemplate :: (String, String) -> [String] -> String
+functionTypeTemplate (typ, identifier) parameters = identifier ++ " :: " ++ intercalate " -> " parameters ++ " -> " ++ typ
 
-functionDefinitionTemplate :: String -> [String] -> [String] -> String -> String
-functionDefinitionTemplate identifier parameters block expression = identifier ++ " " ++ intercalate " " parameters ++ " = " ++ if length block /= 0 then expression ++ blockTemplate block else expression
+functionBodyTemplate :: String -> [String] -> [String] -> String -> String
+functionBodyTemplate identifier parameters block expression = identifier ++ " " ++ intercalate " " parameters ++ " = " ++ if length block /= 0 then expression ++ blockTemplate block else expression
+
+functionDefinitionTemplate :: (String, String) -> [String] -> String -> [String] -> [String] -> String -> String
+functionDefinitionTemplate typIdentifier parametersType identifier parameters block expression = functionTypeTemplate typIdentifier parametersType ++ "\n" ++ functionBodyTemplate identifier parameters block expression
 
 blockTemplate :: [String] -> String
 blockTemplate statements = "\n\twhere " ++ intercalate "\n\t\t" statements
 
 functionTransformer :: FunctionDefinition -> (String, [String], String)
-functionTransformer (FuncDefinition typ identifier parameters block expression) = (identifierTransformer identifier, parametersTransformer parameters, show expression)
+functionTransformer (FuncDefinition typ identifier parameters block expression) = (identifierTransformer identifier, parametersTransformer parameters, expressionTransformer expression)
 
 parametersTransformer :: Parameters -> [String]
 parametersTransformer (Parameters []) = []
