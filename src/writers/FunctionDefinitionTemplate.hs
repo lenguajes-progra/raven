@@ -59,6 +59,10 @@ end
 
 -}
 
+isGreater :: Int -> Int -> String
+isGreater a b = result
+  where result = if a > b then "mayor" else "menor"
+
 sum' :: Int -> Int -> Bool
 sum' a b = c
   where c = a > b
@@ -72,10 +76,6 @@ com a b = e
   where c = a > b
         d = b > a
         e = c && d
-
-isGreater :: Int -> Int -> String
-isGreater a b = result
-  where result = if a > b then "mayor" else "menor"
 
 main :: IO()
 main = putStrLn "sum a b = e\n\twhere c = a > b\n\t\td = b > a\n\t\te = c && d"

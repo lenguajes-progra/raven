@@ -75,13 +75,16 @@ ifStatementParser :: Parser IfStatement
 ifStatementParser =
   IfStatement
     <$> (string "if" *> spaces *> char '(' *> parseExpression <* char ')')
-    <*>expressionParseBetweenBrackets
-    <*> (spaces *> string "else" *>expressionParseBetweenBrackets)
+    <*> statementParseBetweenBrackets
+    <*> (spaces *> string "else" *> statementParseBetweenBrackets)
     <* spaces
     <* string "end"
 
 expressionParseBetweenBrackets :: Parser Expression
 expressionParseBetweenBrackets = between (lexeme (char '{')) (lexeme (char '}')) (spaces *> parseExpression <* spaces)
+
+statementParseBetweenBrackets :: Parser Statement
+statementParseBetweenBrackets = between (lexeme (char '{')) (lexeme (char '}')) (spaces *> statementParse <* spaces)
 
 forStatementParser :: Parser ForStatement
 forStatementParser =
