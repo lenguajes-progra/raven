@@ -26,8 +26,10 @@ functionDefinitionParser =
 expressParserMatchesType :: Type -> Identifier -> Parameters -> Block -> Parser FunctionDefinition
 expressParserMatchesType tp ident p bl =
   parseExpression >>= \expr ->
-    if expressMatchesType tp p bl expr
-      then pure (FuncDefinition tp ident p bl expr)
+    if expressMatchesType tp p bl expr then
+      case bl of
+        (Block _) -> pure (FuncDefinition tp ident p bl expr)
+        (BlockError err) -> pure (FuncDefinitionError err)
       else return (FuncDefinitionError (ErrorType TypeFunction))
 
 expressMatchesType :: Type -> Parameters -> Block -> Expression -> Bool
@@ -69,7 +71,19 @@ statementParse =
     <|> try (End <$> try (char '\n'))
 
 blockParse :: Parser Block
-blockParse = Block <$> statementParse `sepBy` lexeme (char ';')
+blockParse = statementParse `sepBy` lexeme (char ';') >>= \statements ->
+  return (analyzeStatements statements)
+
+analyzeStatements :: [Statement] -> Block
+analyzeStatements statements = case all analyzeStatement statements of
+  True -> Block statements
+  False -> BlockError (ErrorType AssignType)
+
+analyzeStatement :: Statement -> Bool
+analyzeStatement st = case st of
+  (VariableDefinition (VariableErrorDefinition _)) -> False
+  (ArrayDefinition (ArrayErrorDefinition _)) -> False
+  _ -> True
 
 ifStatementParser :: Parser IfStatement
 ifStatementParser =

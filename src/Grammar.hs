@@ -90,7 +90,9 @@ data Comment
   | CommentBlock String
   deriving (Eq, Show)
 
-data Block = Block [Statement]
+data Block 
+  = Block [Statement]
+  | BlockError Error
   deriving (Eq, Show)
 
 data Parameters = Parameters [(Type, Identifier)]
@@ -101,7 +103,9 @@ data FunctionDefinition
   | FuncDefinitionError Error
   deriving (Eq, Show)
 
-data FunctionDefinitionList = FuncDefList [FunctionDefinition]
+data FunctionDefinitionList 
+  = FuncDefList [FunctionDefinition]
+  | FuncDefListError Error
   deriving (Eq, Show)
 
 data ParameterOption
