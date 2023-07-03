@@ -4,6 +4,7 @@ import Grammar
 import LiteralTypeTemplate
 import Data.List
 import ExpressionTemplate
+import StatementTransformer
 
 functionTypeTemplate :: (String, String) -> [String] -> String
 functionTypeTemplate (typ, identifier) parameters = identifier ++ " :: " ++ intercalate " -> " parameters ++ " -> " ++ typ
@@ -17,12 +18,23 @@ functionDefinitionTemplate typIdentifier parametersType identifier parameters bl
 blockTemplate :: [String] -> String
 blockTemplate statements = "\n\twhere " ++ intercalate "\n\t\t" statements
 
+ifStatementBlockTemplate :: [String] -> String
+ifStatementBlockTemplate (varWithoutAssignment : ifstatement : _) = splitString ' ' varWithoutAssignment ++ " = " ++ ifstatement
+
+splitString :: Char -> String -> String
+splitString _ "" = ""
+splitString delimiter (x:xs) = if x == delimiter then xs else splitString delimiter xs
+
 functionTransformer :: FunctionDefinition -> (String, [String], String)
 functionTransformer (FuncDefinition typ identifier parameters block expression) = (identifierTransformer identifier, parametersTransformer parameters, expressionTransformer expression)
 
 parametersTransformer :: Parameters -> [String]
 parametersTransformer (Parameters []) = []
 parametersTransformer (Parameters ((_, identifierParameter):ps)) = identifierTransformer identifierParameter:parametersTransformer (Parameters ps)
+
+blockTransformer :: Block -> String
+blockTransformer (Block []) = ""
+blockTransformer (Block (statement:statements)) = statementTransformer statement ++ blockTransformer (Block statements)
 
 {-
 boolean sum (int a, int b) {
@@ -48,7 +60,7 @@ end
 string isGreater (int a, int b) {
   string result;
   if(a > b) {
-    result= "mayor"
+    int result2 = "mayor"
   } else {
     result = "menor"
   }
@@ -61,7 +73,8 @@ end
 
 isGreater :: Int -> Int -> String
 isGreater a b = result
-  where result = if a > b then "mayor" else "menor"
+  where result = if a > b then result2 else "menor"
+        result2 = "mayor"
 
 sum' :: Int -> Int -> Bool
 sum' a b = c
@@ -78,4 +91,6 @@ com a b = e
         e = c && d
 
 main :: IO()
-main = putStrLn "sum a b = e\n\twhere c = a > b\n\t\td = b > a\n\t\te = c && d"
+main = do
+  putStrLn "sum :: Int -> Int -> Bool\nsum a b = c\n\twhere c = a > b"
+  putStrLn "sum :: Int -> Int -> Bool\nsum a b = result\n\twhere string result\n\t\tif (a>b) {result = \"mayor\"} else {result = \"menor\"}"
