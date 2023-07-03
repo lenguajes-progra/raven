@@ -46,4 +46,4 @@ ifTemplate :: String -> String -> String -> String
 ifTemplate expression stat1 stat2 = "if " ++ expression ++ " then " ++ stat1 ++ " else " ++ stat2
 
 ifTransformer :: IfStatement -> String
-ifTransformer (IfStatement expr stat1 stat2) = "if " ++ expressionTransformer expr ++ " then " ++ statementIfTransformer stat1 ++ " else " ++ statementTransformer stat2
+ifTransformer (IfStatement expr stat1 stat2) = "if " ++ expressionTransformer expr ++ " then " ++ statementIfTransformer stat1 ++ " else " ++ statementIfTransformer stat2
