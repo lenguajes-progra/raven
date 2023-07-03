@@ -1,2 +1,2 @@
-int hello(int a, int b) {int ab =2; if(c > d) {a == b} else { a | b} end} return ab end
-boolean hello2() {boolean b = true} return b end
+int hello(int a, int b) {int ab =2; int next; if (a == b) {next = 2} else {next = 1} end} return ab end
+boolean hello2() {boolean b = true} return true end
