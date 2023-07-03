@@ -1,9 +1,9 @@
 module StatementTransformer where
 
+import Grammar
 import ArrayDefinitionTemplate
 import DataTransformer
 import ExpressionTemplate
-import Grammar
 import PrintStatementTemplate
 import VariableDefTemplate
 import LoopTemplate

@@ -2,7 +2,7 @@ module Comment where
 
 import Grammar
 import Text.Parsec
-import Text.Parsec.String
+import Text.Parsec.String(Parser)
 
 commentParser :: String -> Either Error Comment
 commentParser input = case parse commentParser' "" input of

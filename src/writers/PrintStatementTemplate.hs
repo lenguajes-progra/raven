@@ -1,7 +1,7 @@
 module PrintStatementTemplate where
 
-import ExpressionTemplate
 import Grammar
+import ExpressionTemplate
 
 printStatementTemplate :: String -> String
 printStatementTemplate exp = "main :: IO()" ++ "\n" ++ "main = print" ++ "(" ++ exp ++ ")"

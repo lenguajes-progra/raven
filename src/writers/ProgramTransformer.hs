@@ -1,8 +1,8 @@
 module ProgramTransformer where
 
-import FunctionDefinitionTemplate
 import Grammar
 import Program
+import FunctionDefinitionTemplate
 import Text.Parsec
 
 programTransformer :: Program -> String

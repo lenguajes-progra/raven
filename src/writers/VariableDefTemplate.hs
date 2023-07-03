@@ -26,4 +26,3 @@ variableDefinitionTransformer (VariableDefinitionWithoutAssignment typ identifie
 variableDefinitionTransformer (VariableDefinitionWithAssignment identifier expression) = TwiceNodeWithAssignment (identifierTransformer identifier) (expressionTransformer expression)
 variableDefinitionTransformer _ = undefined
 
-

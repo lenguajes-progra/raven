@@ -1,13 +1,13 @@
 module Statement where
 
+import Grammar
+import Type
 import Expression
 import Function
-import Grammar
 import Parsers
 import PrintStatement
 import Text.Parsec
-import Text.Parsec.String
-import Type
+import Text.Parsec.String(Parser)
 
 functionDefinitionParser :: Parser FunctionDefinition
 functionDefinitionParser =

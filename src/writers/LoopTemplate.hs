@@ -29,4 +29,3 @@ replaceSequence sequence replacement expr =
                 then replacement ++ replaceSequence sequence replacement (drop (length sequence) expr)
                 else x : replaceSequence sequence replacement xs
 
-
