@@ -4,8 +4,14 @@ import Grammar
 import DataTransformer
 import LiteralTypeTemplate
 
-arrayTemplate :: String -> String -> String -> String
-arrayTemplate arrType name exp = name ++ "::" ++ arrType ++ " \n " ++ name ++ "=" ++ exp
+arrayDefinitionTemplate :: String -> String -> String -> String
+arrayDefinitionTemplate arrType name literal = name ++ "::" ++ arrType ++ " \n " ++ name ++ "=" ++ literal
+
+arrayBodyTemplate :: String -> String -> String
+arrayBodyTemplate identifier literal = identifier ++ " = " ++ literal
+
+arrayWithoutAssignment :: String -> String
+arrayWithoutAssignment identifier = "\twhere " ++ identifier ++ " = "
 
 elementListTransformer' :: ElementList -> String
 elementListTransformer' (Literals []) = ""
@@ -19,6 +25,6 @@ elementListTransformer exp = "[" ++ elementListTransformer' exp ++ "]"
 
 arrayDefinitionTransformer :: ArrayDefinition -> VariableType
 arrayDefinitionTransformer (ArrayDefinitionComplete arrType identifier elementList) = TriNode (typeTransformer arrType) (identifierTransformer identifier) (elementListTransformer elementList)
-arrayDefinitionTransformer (ArrayDefinitionWithoutAssignment arrType identifier) = TwiceNode (typeTransformer arrType) (identifierTransformer identifier)
-arrayDefinitionTransformer (ArrayDefinitionWithAssignment identifier elementList) = TwiceNode (identifierTransformer identifier) (elementListTransformer elementList)
-
+arrayDefinitionTransformer (ArrayDefinitionWithoutAssignment arrType identifier) = TwiceNodeWithoutAssignment (typeTransformer arrType) (identifierTransformer identifier)
+arrayDefinitionTransformer (ArrayDefinitionWithAssignment identifier elementList) = TwiceNodeWithAssignment (identifierTransformer identifier) (elementListTransformer elementList)
+arrayDefinitionTransformer _ = undefined

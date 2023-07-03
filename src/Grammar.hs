@@ -44,7 +44,7 @@ data ArrayDefinition
 data PrintStatement = PrintStatement Expression
   deriving (Eq, Show)
 
-data IfStatement = IfStatement Expression Expression Expression deriving (Eq, Show)
+data IfStatement = IfStatement Expression Statement Statement deriving (Eq, Show)
 
 data Expression
   = Literal Literal
@@ -114,8 +114,7 @@ newtype ParametersCalled = ParametersCalled [ParameterOption] deriving (Eq, Show
 data FunctionCall = FunctionCall Identifier ParametersCalled deriving (Eq, Show)
 
 data Statement
-  = Expression Expression
-  | VariableDefinition VariableDefinition
+  = VariableDefinition VariableDefinition
   | ArrayDefinition ArrayDefinition
   | IfStat IfStatement
   | ForStat ForStatement

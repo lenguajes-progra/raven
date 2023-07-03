@@ -1,14 +1,10 @@
 module StatementTest where
 
-import Control.Exception (catch)
 import Grammar
-import Literal
-import Parsers
 import Statement
 import Test.Tasty
 import Test.Tasty.HUnit (Assertion, assertEqual, testCase)
 import Text.Parsec
-import Type
 
 testStatementParseVarDef :: Assertion
 testStatementParseVarDef = assertEqual "statementParseVarDef" (parse statementParse "" "int a = 1;") (Right (VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (Literal (IntegerLiteral 1)))))

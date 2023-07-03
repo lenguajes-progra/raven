@@ -54,8 +54,8 @@ identMatchesBlockType :: Type -> Block -> Identifier -> Bool
 identMatchesBlockType _ (Block []) _ = False
 identMatchesBlockType t (Block (def : bl)) ident =
   case def of
-    VariableDefinition (VariableDefinitionComplete tp iden _) -> iden == ident && t == tp
-    VariableDefinition (VariableDefinitionWithoutAssignment tp iden) -> iden == ident && t == tp
+    VariableDefinition (VariableDefinitionComplete tp iden _) -> (iden == ident && t == tp) || identMatchesBlockType t (Block bl) ident
+    VariableDefinition (VariableDefinitionWithoutAssignment tp iden) -> (iden == ident && t == tp) || identMatchesBlockType t (Block bl) ident
     _ -> identMatchesBlockType t (Block bl) ident
 
 statementParse :: Parser Statement
@@ -66,7 +66,6 @@ statementParse =
     <|> try (ForStat <$> try forStatementParser)
     <|> try (PrintStat <$> try printStatementParser)
     <|> try (FuncCallStat <$> try parseFunctionCall)
-    <|> try (Expression <$> try parseExpression)
     <|> try (End <$> try (char '\n'))
 
 blockParse :: Parser Block
@@ -76,13 +75,16 @@ ifStatementParser :: Parser IfStatement
 ifStatementParser =
   IfStatement
     <$> (string "if" *> spaces *> char '(' *> parseExpression <* char ')')
-    <*>expressionParseBetweenBrackets
-    <*> (spaces *> string "else" *>expressionParseBetweenBrackets)
+    <*> statementParseBetweenBrackets
+    <*> (spaces *> string "else" *> statementParseBetweenBrackets)
     <* spaces
     <* string "end"
 
 expressionParseBetweenBrackets :: Parser Expression
 expressionParseBetweenBrackets = between (lexeme (char '{')) (lexeme (char '}')) (spaces *> parseExpression <* spaces)
+
+statementParseBetweenBrackets :: Parser Statement
+statementParseBetweenBrackets = between (lexeme (char '{')) (lexeme (char '}')) (spaces *> statementParse <* spaces)
 
 forStatementParser :: Parser ForStatement
 forStatementParser =

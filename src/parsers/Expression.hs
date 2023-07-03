@@ -108,6 +108,8 @@ parseExpression =
     <|> LogicalExpression <$> try parseLogicalExpression
     <|> BitExpression <$> try parseBitExpression
     <|> FuncCall <$> try parseFunctionCall
+    <|> Literal <$> try literalParser
+    <|> Identifier <$> try identifierParser
     <|> term
 
 term :: Parser Expression

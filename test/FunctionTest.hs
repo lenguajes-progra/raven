@@ -12,10 +12,10 @@ import Text.Parsec
 import Type
 
 testFunctionDefinitionParserIntType :: Assertion
-testFunctionDefinitionParserIntType = assertEqual "parseFunctionDefIntType" (parse functionDefinitionParser "" "int function() {2 > 3} return 0 end") (Right (FuncDefinition IntType (Ident "function") (Parameters []) (Block [Expression (BooleanExpression (BooleanOp (Literal (IntegerLiteral 2)) GreaterThan (Literal (IntegerLiteral 3))))]) (Literal (IntegerLiteral 0))))
+testFunctionDefinitionParserIntType = assertEqual "parseFunctionDefIntType" (parse functionDefinitionParser "" "int function() {int a = 2 > 3} return 0 end") (Right (FuncDefinition IntType (Ident "function") (Parameters []) (Block [VariableDefinition (VariableErrorDefinition (ErrorType AssignType))]) (Literal (IntegerLiteral 0))))
 
 testFunctionDefinitionParserCharType :: Assertion
-testFunctionDefinitionParserCharType = assertEqual "parseFunctionDefCharType" (parse functionDefinitionParser "" "char function() {10 << 100} return 'a'  end") (Right (FuncDefinition CharType (Ident "function") (Parameters []) (Block [Expression (BitExpression (BitOp (Literal (IntegerLiteral 10)) LeftShift (Literal (IntegerLiteral 100))))]) (Literal (CharacterLiteral 'a'))))
+testFunctionDefinitionParserCharType = assertEqual "parseFunctionDefCharType" (parse functionDefinitionParser "" "boolean function(int a, int b) {boolean c = a > b} return c end") (Right (FuncDefinition BooleanType (Ident "function") (Parameters [(IntType,Ident "a"),(IntType,Ident "b")]) (Block [VariableDefinition (VariableDefinitionComplete BooleanType (Ident "c") (BooleanExpression (BooleanOp (Identifier (Ident "a")) GreaterThan (Identifier (Ident "b")))))]) (Identifier (Ident "c"))))
 
 testFunctionDefinitionParserBooleanType :: Assertion
 testFunctionDefinitionParserBooleanType = assertEqual "parseFunctionDefBooleanType" (parse functionDefinitionParser "" "boolean my_function() {true != false} return true  end") (Right (FuncDefinition BooleanType (Ident "my_function") (Parameters []) (Block [Expression (BooleanExpression (BooleanOp (Literal (BooleanLiteral True)) NotEqual (Literal (BooleanLiteral False))))]) (Literal (BooleanLiteral True))))
