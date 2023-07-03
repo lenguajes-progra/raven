@@ -54,8 +54,8 @@ identMatchesBlockType :: Type -> Block -> Identifier -> Bool
 identMatchesBlockType _ (Block []) _ = False
 identMatchesBlockType t (Block (def : bl)) ident =
   case def of
-    VariableDefinition (VariableDefinitionComplete tp iden _) -> iden == ident && t == tp
-    VariableDefinition (VariableDefinitionWithoutAssignment tp iden) -> iden == ident && t == tp
+    VariableDefinition (VariableDefinitionComplete tp iden _) -> (iden == ident && t == tp) || identMatchesBlockType t (Block bl) ident
+    VariableDefinition (VariableDefinitionWithoutAssignment tp iden) -> (iden == ident && t == tp) || identMatchesBlockType t (Block bl) ident
     _ -> identMatchesBlockType t (Block bl) ident
 
 statementParse :: Parser Statement
