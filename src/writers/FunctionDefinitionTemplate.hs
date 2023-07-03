@@ -29,7 +29,11 @@ splitString delimiter (x : xs) = if x == delimiter then xs else splitString deli
 -- functionTransformer (FuncDefinition typ identifier parameters block expression) = (identifierTransformer identifier, parametersTransformer parameters, expressionTransformer expression)
 
 functionDefinitionTransformer :: FunctionDefinition -> String
-functionDefinitionTransformer (FuncDefinition typ identifier parameters block expression) = identifierTransformer identifier ++ " :: " ++ intercalate " -> " (parametersTypeTransformer parameters) ++ " -> " ++ typeTransformer typ ++ "\n" ++ identifierTransformer identifier ++ " " ++ intercalate " " (parametersIdentifierTransformer parameters) ++ " = " ++ if blockTransformer block /= "" then expressionTransformer expression ++ "\n\twhere\n" ++ blockTransformer block else expressionTransformer expression
+functionDefinitionTransformer (FuncDefinition typ identifier parameters block expression) = 
+  identifierTransformer identifier ++ " :: " ++ 
+  (if parametersTypeTransformer parameters == [] then "" else (intercalate " -> " (parametersTypeTransformer parameters) ++ " -> ")) ++ 
+  typeTransformer typ ++ "\n" ++
+  identifierTransformer identifier ++ " " ++ intercalate " " (parametersIdentifierTransformer parameters) ++ " = " ++ if blockTransformer block /= "" then expressionTransformer expression ++ "\n\twhere\n\t\t" ++ blockTransformer block else expressionTransformer expression
 functionDefinitionTransformer _ = ""
 
 parametersIdentifierTransformer :: Parameters -> [String]
