@@ -16,6 +16,6 @@ main2 = do
     ( case parse programParser "../resources/input.rav" fileText of
         Right r -> case r of
           Right r' -> programTransformer r'
-          Left _ -> ""
-        Left _ -> ""
+          Left e -> show e
+        Left e -> show e
     )
