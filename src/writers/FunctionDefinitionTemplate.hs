@@ -29,7 +29,7 @@ splitString delimiter (x:xs) = if x == delimiter then xs else splitString delimi
 -- functionTransformer (FuncDefinition typ identifier parameters block expression) = (identifierTransformer identifier, parametersTransformer parameters, expressionTransformer expression)
 
 functionDefinitionTransformer :: FunctionDefinition -> String
-functionDefinitionTransformer (FuncDefinition typ identifier parameters block expression) = identifierTransformer identifier ++ " :: " ++ intercalate " -> " (parametersTypeTransformer parameters) ++ " -> " ++ typeTransformer typ ++ "\n" ++ identifierTransformer identifier ++ " " ++ intercalate " " (parametersIdentifierTransformer parameters) ++ " = " ++ if blockTransformer block /= "" then expressionTransformer expression ++ "\n\twhere\n\t\t" ++ blockTransformer block else expressionTransformer expression ++ "\n\twhere\n\t\t"
+functionDefinitionTransformer (FuncDefinition typ identifier parameters block expression) = identifierTransformer identifier ++ " :: " ++ intercalate " -> " (parametersTypeTransformer parameters) ++ " -> " ++ typeTransformer typ ++ "\n" ++ identifierTransformer identifier ++ " " ++ intercalate " " (parametersIdentifierTransformer parameters) ++ " = " ++ if blockTransformer block /= "" then expressionTransformer expression ++ "\n\twhere\n\t\t" ++ blockTransformer block else expressionTransformer expression
 functionDefinitionTransformer _ = ""
 
 parametersIdentifierTransformer :: Parameters -> [String]
@@ -42,7 +42,12 @@ parametersTypeTransformer (Parameters ((typeParameter, _):ps)) = typeTransformer
 
 blockTransformer :: Block -> String
 blockTransformer (Block []) = ""
+blockTransformer (Block ((VariableDefinition (VariableDefinitionWithoutAssignment tp ident)):ifstat@(IfStat is):statements)) = identifierTransformer ident ++ " = " ++ ifTransformer is
 blockTransformer (Block (statement:statements)) = statementTransformer statement ++ blockTransformer (Block statements)
+
+blockIfVerificationTransformer :: Block -> Bool
+blockIfVerificationTransformer (Block ((VariableDefinition (VariableDefinitionWithoutAssignment x y)):(IfStat (IfStatement a b c)):statements)) = True
+blockIfVerificationTransformer _ = False
 
 {-
 boolean sum (int a, int b) {
@@ -98,9 +103,14 @@ com a b = e
         d = b > a
         e = c && d
 
+function :: Int -> Int -> String
+function a b = result
+        where
+                result = if a>b then "mayor" else "menor"
+
 main :: IO()
 main = do
   putStrLn "sum :: Int -> Int -> Bool\nsum a b = c\n\twhere c = a > b"
   putStrLn "sum :: Int -> Int -> Bool\nsum a b = result\n\twhere string result\n\t\tif (a>b) {result = \"mayor\"} else {result = \"menor\"}"
   putStrLn "function :: Int -> Int -> Bool\nfunction a b = c\n\twhere\n\t\tc :: Bool\nc = a>b\n"
-  putStrLn "function :: Int -> Int -> String\nfunction a b = result\n\twhere\n\t\tresult = \"\"\nif a>b then \"mayor\" else \"menor\""
+  putStrLn "function :: Int -> Int -> String\nfunction a b = result\n\twhere\n\t\tresult = if a>b then \"mayor\" else \"menor\""
