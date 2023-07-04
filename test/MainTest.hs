@@ -32,5 +32,6 @@ test = testGroup "Builder Tests" [
     ExpressionTest.expressionTests,
     PrintStatementTest.printStatementTest,
     ProgramTest.programTest,
-    StatementTest.statementTests,
-    FunctionTest.functionTests]
+    StatementTest.statementTests
+    FunctionTest.functionTests
+    ]
