@@ -7,7 +7,7 @@ import Text.Parsec
 
 programTransformer :: Program -> String
 programTransformer (Program (FuncDefList fdl)) =
-  "module Output where\nimport Data.Bits\n\n"
+  "module Output where\n\nimport Data.Bits\n\n"
     ++ concatMap (`functionDefinitionTransformer` fdl) fdl
 programTransformer _ = ""
 
