@@ -1,12 +1,12 @@
 module Expression where
 
-import Data.Functor (($>))
 import Grammar
+import Type
 import Literal
 import Parsers
 import Text.Parsec
-import Text.Parsec.String
-import Type
+import Text.Parsec.String(Parser)
+import Data.Functor (($>))
 
 parseFromTo :: String -> a -> Parser a
 parseFromTo s a = many space >> string s *> many space $> a

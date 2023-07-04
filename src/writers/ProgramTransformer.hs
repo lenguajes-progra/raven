@@ -7,15 +7,20 @@ import Text.Parsec
 
 programTransformer :: Program -> String
 programTransformer (Program (FuncDefList fdl)) =
-  concatMap functionDefinitionTransformer fdl
+  "module Output where\n\nimport Data.Bits\n\n"
+    ++ concatMap (`functionDefinitionTransformer` fdl) fdl
+programTransformer _ = ""
 
-main2 :: IO ()
-main2 = do
+textWriter :: IO ()
+textWriter = do
   fileText <- readFile "../resources/input.rav"
-  putStrLn
-    ( case parse programParser "../resources/input.rav" fileText of
-        Right r -> case r of
-          Right r' -> programTransformer r'
-          Left e -> show e
-        Left e -> show e
+  ( case parse programParser "../resources/input.rav" fileText of
+      Right r -> case r of
+        Right r' -> do
+          print r'
+          let code = programTransformer r'
+          putStrLn code
+          writeFile "../resources/Output.hs" code
+        Left e -> print e
+      Left e -> print e
     )

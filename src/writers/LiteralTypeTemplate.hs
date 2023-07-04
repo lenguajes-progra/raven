@@ -20,4 +20,3 @@ typeTransformer word = case word of
 
 identifierTransformer :: Identifier -> String
 identifierTransformer (Ident a) = takeWhile (/= '\"') (tail (show a))
-

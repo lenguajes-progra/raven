@@ -1,10 +1,9 @@
 module Program where
 
 import Grammar
-import Parsers
 import Statement
 import Text.Parsec
-import Text.Parsec.String
+import Text.Parsec.String(Parser)
 
 functionsDefinitionParser :: Parser FunctionDefinitionList
 functionsDefinitionParser = functionDefinitionParser `sepBy` (char '\n' *> spaces) >>= \functions ->

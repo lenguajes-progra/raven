@@ -1,10 +1,10 @@
 module Type where
 
-import Data.Functor (($>))
 import Grammar
 import Literal
 import Text.Parsec
-import Text.Parsec.String
+import Text.Parsec.String(Parser)
+import Data.Functor (($>))
 
 identifierParser :: Parser Identifier
 identifierParser = Ident <$> ((:) <$> letter <*> many (letter <|> digit <|> char '_'))

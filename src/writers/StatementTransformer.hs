@@ -4,12 +4,12 @@ import ArrayDefinitionTemplate
 import DataTransformer
 import ExpressionTemplate
 import Grammar
+import LoopTemplate
 import PrintStatementTemplate
 import VariableDefTemplate
-import LoopTemplate
 
 dataVariableIfTransformer :: VariableType -> String
-dataVariableIfTransformer (TriNode _ _ _) = "error \"You cannot declare variables here\""
+dataVariableIfTransformer (TriNode {}) = "error \"You cannot declare variables here\""
 dataVariableIfTransformer (TwiceNodeWithoutAssignment _ _) = "error \"You cannot declare variables here\""
 dataVariableIfTransformer (TwiceNodeWithAssignment _ expr) = expr
 
@@ -25,25 +25,25 @@ verifyType x = case x of
   "Int" -> "0"
   "Bool" -> "false"
   "Char" -> "\'\'"
-  ('[':_) -> "[]"
+  ('[' : _) -> "[]"
   _ -> ""
 
-statementTransformer :: Statement -> String
-statementTransformer (VariableDefinition vd) = dataVariableTransformer (variableDefinitionTransformer vd)
-statementTransformer (ArrayDefinition ad) = dataVariableTransformer (arrayDefinitionTransformer ad)
-statementTransformer (PrintStat ps) = printStatementTransformer ps
-statementTransformer (FuncCallStat fcs) = functionCallTransformer fcs
-statementTransformer (IfStat ifs) = ifTransformer ifs
-statementTransformer (ForStat for) = loopTransformer for
-statementTransformer _ = ""
+statementTransformer :: Statement -> [FunctionDefinition] -> String
+statementTransformer (VariableDefinition vd) fdl = dataVariableTransformer (variableDefinitionTransformer vd fdl)
+statementTransformer (ArrayDefinition ad) _ = dataVariableTransformer (arrayDefinitionTransformer ad)
+statementTransformer (PrintStat ps) fdl = printStatementTransformer ps fdl
+statementTransformer (FuncCallStat fcs) fdl = functionCallTransformer fcs fdl
+statementTransformer (IfStat ifs) fdl = ifTransformer ifs fdl
+statementTransformer (ForStat for) fdl = loopTransformer for fdl
+statementTransformer _ _ = ""
 
-statementIfTransformer :: Statement -> String
-statementIfTransformer (VariableDefinition vd) = dataVariableIfTransformer (variableDefinitionTransformer vd)
-statementIfTransformer (ArrayDefinition ad) = dataVariableIfTransformer (arrayDefinitionTransformer ad)
-statementIfTransformer _ = ""
+statementIfTransformer :: Statement -> [FunctionDefinition] -> String
+statementIfTransformer (VariableDefinition vd) fd = dataVariableIfTransformer (variableDefinitionTransformer vd fd)
+statementIfTransformer (ArrayDefinition ad) _ = dataVariableIfTransformer (arrayDefinitionTransformer ad)
+statementIfTransformer _ _ = ""
 
 ifTemplate :: String -> String -> String -> String
 ifTemplate expression stat1 stat2 = "if " ++ expression ++ " then " ++ stat1 ++ " else " ++ stat2
 
-ifTransformer :: IfStatement -> String
-ifTransformer (IfStatement expr stat1 stat2) = "if " ++ expressionTransformer expr ++ " then " ++ statementIfTransformer stat1 ++ " else " ++ statementIfTransformer stat2
+ifTransformer :: IfStatement -> [FunctionDefinition] -> String
+ifTransformer (IfStatement expr stat1 stat2) fd = "if " ++ expressionTransformer expr fd ++ " then " ++ statementIfTransformer stat1 fd ++ " else " ++ statementIfTransformer stat2 fd
