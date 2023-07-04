@@ -13,22 +13,19 @@ testPrintStatementTransformerString :: Assertion
 testPrintStatementTransformerString =
   assertEqual
   "testPrintStatementTransformerString"
-  (printStatementTransformer (PrintStatement (Literal (StringLiteral "Hello World"))))
-  ("main :: IO()\nmain = print(\"Hello World\")\n")
+  (printStatementTransformer (PrintStatement (Literal (StringLiteral "Hello World"))) []) ("main :: IO()\nmain = print(\"Hello World\")\n")
 
 testPrintStatementTransformerNumber :: Assertion
 testPrintStatementTransformerNumber =
   assertEqual
   "testPrintStatementTransformerNumber"
-  (printStatementTransformer (PrintStatement (Literal (IntegerLiteral 1))))
-  ("main :: IO()\nmain = print(1)\n")
+  (printStatementTransformer (PrintStatement (Literal (IntegerLiteral 1))) []) ("main :: IO()\nmain = print(1)\n")
 
 testPrintStatementTransformerChar :: Assertion
 testPrintStatementTransformerChar =
   assertEqual
   "testPrintStatementTransformerChar"
-  (printStatementTransformer (PrintStatement (Literal (CharacterLiteral 'a'))))
-  ("main :: IO()\nmain = print('a')\n")
+  (printStatementTransformer (PrintStatement (Literal (CharacterLiteral 'a'))) []) ("main :: IO()\nmain = print('a')\n")
 
 printStatementTemplateTest :: TestTree
 printStatementTemplateTest =
