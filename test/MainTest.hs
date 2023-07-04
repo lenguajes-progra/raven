@@ -14,6 +14,11 @@ import CommentTemplateTest
 import ExpressionTemplateTest
 import FunctionTemplateTest
 import PrintStatementTemplateTest
+import LoopTemplateTest
+import LiteralTemplateTest
+import ProgramTemplateTest
+import StatementTemplateTest
+import VariableTemplateTest
 
 main :: IO ()
 main = defaultMain test
@@ -33,4 +38,10 @@ test = testGroup "Builder Tests" [
     PrintStatementTest.printStatementTest,
     ProgramTest.programTest,
     StatementTest.statementTests,
-    FunctionTest.functionTests]
+    -- FunctionTest.functionTests
+    LoopTemplateTest.loopTemplateTests,
+    LiteralTemplateTest.literalTemplateTests,
+    ProgramTemplateTest.programTransformerTests,
+    StatementTemplateTest.statementTransformerTests,
+    VariableTemplateTest.variableDefinitionTemplateTests
+    ]

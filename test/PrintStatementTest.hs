@@ -67,7 +67,7 @@ testHundredNumberPrintStatementParser =
 printStatementTest :: TestTree
 printStatementTest =
   testGroup
-    "Builder Function Tests"
+    "Builder PrintStatement Tests"
     [ testCase "testStringWithSpacePrintStatementParser" testStringWithSpacePrintStatementParser,
       testCase "testSingleStringPrintStatementParser" testSingleStringPrintStatementParser,
       testCase "testSpecialCharacterStringPrintStatementParser" testSpecialCharacterStringPrintStatementParser,

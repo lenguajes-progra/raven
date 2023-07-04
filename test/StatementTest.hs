@@ -13,10 +13,10 @@ testStatementParseArrDef :: Assertion
 testStatementParseArrDef = assertEqual "statementParseArrDef" (parse statementParse "" "[boolean] arr = [true, false];") (Right (ArrayDefinition (ArrayDefinitionComplete (ArrayType BooleanType) (Ident "arr") (Literals [BooleanLiteral True, BooleanLiteral False]))))
 
 testStatementParseIf :: Assertion
-testStatementParseIf = assertEqual "statementParseIf" (parse statementParse "" "if(a==b) {for (a;a==b) {int a = 2} end} else {print f} end") (Right (IfStat (IfStatement (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [ForStat (ForStatement (Identifier (Ident "a")) (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (Literal (IntegerLiteral 2)))]))]) (Block [PrintStat (PrintStatement (Identifier (Ident "f")))]))))
+testStatementParseIf = assertEqual "statementParseIf" (parse statementParse "" "if(a==b) {a = 3} else {a = 4} end") (Right (IfStat (IfStatement (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (Literal (IntegerLiteral 3)))) (VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (Literal (IntegerLiteral 4)))))))
 
 testStatementParseLoop :: Assertion
-testStatementParseLoop = assertEqual "statementParseLoop" (parse statementParse "" "for (a;a==b) {int a = 2} end") (Right (ForStat (ForStatement (Identifier (Ident "a")) (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (Literal (IntegerLiteral 2)))]))))
+testStatementParseLoop = assertEqual "statementParseLoop" (parse statementParse "" "for (a; true) {a==b} end") (Right (ForStat (ForStatement (Identifier (Ident "a")) (Literal (BooleanLiteral True)) (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))))))
 
 testStatementParsePrint :: Assertion
 testStatementParsePrint = assertEqual "statementParsePrint" (parse statementParse "" "print f") (Right (PrintStat (PrintStatement (Identifier (Ident "f")))))
@@ -25,7 +25,7 @@ testStatementParseFunCall :: Assertion
 testStatementParseFunCall = assertEqual "statementParseFunCall" (parse statementParse "" "main()") (Right (FuncCallStat (FunctionCall (Ident "main") (ParametersCalled []))))
 
 testStatementParseExp :: Assertion
-testStatementParseExp = assertEqual "statementParseExp" (parse statementParse "" "a >= b") (Right (Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) GreatEqualThan (Identifier (Ident "b"))))))
+testStatementParseExp = assertEqual "statementParseExp" (parse statementParse "" "a = 3") (Right (VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (Literal (IntegerLiteral 3)))))
 
 testStatementParseEnd :: Assertion
 testStatementParseEnd = assertEqual "statementParseEnd" (parse statementParse "" "\n") (Right (End '\n'))
@@ -34,13 +34,13 @@ testBlockParse :: Assertion
 testBlockParse = assertEqual "blockParse" (parse blockParse "" "print f") (Right (Block [PrintStat (PrintStatement (Identifier (Ident "f")))]))
 
 testBlockParseBB :: Assertion
-testBlockParseBB = assertEqual "blockParseBB" (parse blockParseBetweenBrackets "" "{ print f }") (Right (Block [PrintStat (PrintStatement (Identifier (Ident "f")))]))
+testBlockParseBB = assertEqual "blockParseBB" (parse expressionParseBetweenBrackets "" "{ a >= 3 }") (Right (BooleanExpression (BooleanOp (Identifier (Ident "a")) GreatEqualThan (Literal (IntegerLiteral 3)))))
 
 testIfStmntParser :: Assertion
-testIfStmntParser = assertEqual "ifStmntParser" (parse ifStatementParser "" "if(a==b) {for (a;a==b) {int a = 2} end} else {print f} end") (Right (IfStatement (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [ForStat (ForStatement (Identifier (Ident "a")) (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (Literal (IntegerLiteral 2)))]))]) (Block [PrintStat (PrintStatement (Identifier (Ident "f")))])))
+testIfStmntParser = assertEqual "ifStmntParser" (parse ifStatementParser "" "if(a==b) {a = 3} else {a = 4} end") (Right (IfStatement (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (Literal (IntegerLiteral 3)))) (VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (Literal (IntegerLiteral 4))))))
 
 testLoopStmntParser :: Assertion
-testLoopStmntParser = assertEqual "loopStmntParser" (parse forStatementParser "" "for (a;a==b) {int a = 2} end") (Right (ForStatement (Identifier (Ident "a")) (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (Literal (IntegerLiteral 2)))])))
+testLoopStmntParser = assertEqual "loopStmntParser" (parse forStatementParser "" "for (a; true) {a==b} end") (Right (ForStatement (Identifier (Ident "a")) (Literal (BooleanLiteral True)) (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b"))))))
 
 statementTests :: TestTree
 statementTests =

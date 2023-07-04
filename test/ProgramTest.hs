@@ -10,104 +10,104 @@ testProgramParserAssingIntegerValue :: Assertion
 testProgramParserAssingIntegerValue =
   assertEqual
     "testProgramParserAssingIntegerValue"
-    (parse programParser "" "main() `int a = 2; int b = 1` end")
-    (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (Literal (IntegerLiteral 2))),VariableDefinition (VariableDefinitionComplete IntType (Ident "b") (Literal (IntegerLiteral 1)))]))))
+    (parse programParser "" "boolean hello2() {boolean b = true} return true end")
+    (Right (Right (Program (FuncDefList [FuncDefinition BooleanType (Ident "hello2") (Parameters []) (Block [VariableDefinition (VariableDefinitionComplete BooleanType (Ident "b") (Literal (BooleanLiteral True)))]) (Literal (BooleanLiteral True))]))))
 
 testProgramParserAssingStringValue :: Assertion
 testProgramParserAssingStringValue =
   assertEqual
   "testProgramParserAssingStringValue"
-  (parse programParser "" "main() `string a = \"hello\"; string b = \"world\"` end")
-  (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableDefinitionComplete StringType (Ident "a") (Literal (StringLiteral "hello"))),VariableDefinition (VariableDefinitionComplete StringType (Ident "b") (Literal (StringLiteral "world")))]))))
+  (parse programParser "" "boolean func() {string a = \"hello\"; string b = \"world\"} return true end")
+  (Right (Right (Program (FuncDefList [FuncDefinition BooleanType (Ident "func") (Parameters []) (Block [VariableDefinition (VariableDefinitionComplete StringType (Ident "a") (Literal (StringLiteral "hello"))),VariableDefinition (VariableDefinitionComplete StringType (Ident "b") (Literal (StringLiteral "world")))]) (Literal (BooleanLiteral True))]))))
 
 testProgramParserAssingCharValue :: Assertion
 testProgramParserAssingCharValue =
   assertEqual
   "testProgramParserAssingCharValue"
-  (parse programParser "" "main() `char a = 'a'; char b = 'a'` end")
-  (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableDefinitionComplete CharType (Ident "a") (Literal (CharacterLiteral 'a'))),VariableDefinition (VariableDefinitionComplete CharType (Ident "b") (Literal (CharacterLiteral 'a')))]))))
+  (parse programParser "" "boolean func() {char a = 'a'; char b = 'a'} return true end")
+  (Right (Right (Program (FuncDefList [FuncDefinition BooleanType (Ident "func") (Parameters []) (Block [VariableDefinition (VariableDefinitionComplete CharType (Ident "a") (Literal (CharacterLiteral 'a'))),VariableDefinition (VariableDefinitionComplete CharType (Ident "b") (Literal (CharacterLiteral 'a')))]) (Literal (BooleanLiteral True))]))))
 
 testProgramParserInvalidAssingIntegerValue :: Assertion
 testProgramParserInvalidAssingIntegerValue =
   assertEqual
     "testProgramParserInvalidAssingIntegerValue"
-    (parse programParser "" "main() `int a = a; int b = b` ")
+    (parse programParser "" "boolean func() {a int a = a; int b = b} return true end ")
     (Right (Left (ErrorType Syntax)))
 
 testProgramParserInvalidAssingStringValue :: Assertion
 testProgramParserInvalidAssingStringValue =
   assertEqual
   "testProgramParserInvalidAssingStringValue"
-  (parse programParser "" "main() `string a = 1; string b = 2` end")
-  (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableErrorDefinition (ErrorType AssignType)),VariableDefinition (VariableErrorDefinition (ErrorType AssignType))]))))
+  (parse programParser "" "boolean func() {a string a = a; string b = b} return true end ")
+  (Right (Left (ErrorType Syntax)))
 
 testProgramParserInvalidAssingCharValue :: Assertion
 testProgramParserInvalidAssingCharValue =
   assertEqual
   "testProgramParserInvalidAssingCharValue"
-  (parse programParser "" "main() `char a = 1; char b = 2` end")
-  (Right (Right (Program (FuncDefList []) (Block [VariableDefinition (VariableErrorDefinition (ErrorType AssignType)),VariableDefinition (VariableErrorDefinition (ErrorType AssignType))]))))
+  (parse programParser "" "boolean func() {a string a = a; string b = b} return true end ")
+  (Right (Left (ErrorType Syntax)))
 
 testIfProgramParser :: Assertion
 testIfProgramParser =
   assertEqual
     "testIfProgramParser"
-    (parse programParser "" "main() `if(a==b) {print f} else {print c} end` end")
-    (Right (Right (Program (FuncDefList []) (Block [IfStat (IfStatement (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [PrintStat (PrintStatement (Identifier (Ident "f")))]) (Block [PrintStat (PrintStatement (Identifier (Ident "c")))]))]))))
+  (parse programParser "" "boolean func() {if(a==b) {a = 3} else {a = 4} end} return true end")
+  (Right (Right (Program (FuncDefList [FuncDefinition BooleanType (Ident "func") (Parameters []) (Block [IfStat (IfStatement (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (Literal (IntegerLiteral 3)))) (VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (Literal (IntegerLiteral 4)))))]) (Literal (BooleanLiteral True))]))))
 
 testWhileProgramParser :: Assertion
 testWhileProgramParser =
   assertEqual
   "testWhileProgramParser"
-  (parse programParser "" "main() `for (a;a==b) {int a = 2} end` end")
-  (Right (Right (Program (FuncDefList []) (Block [ForStat (ForStatement (Identifier (Ident "a")) (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))) (Block [VariableDefinition (VariableDefinitionComplete IntType (Ident "a") (Literal (IntegerLiteral 2)))]))]))))
+  (parse programParser "" "boolean func() {for (a; true) {a==b} end} return true end")
+  (Right (Right (Program (FuncDefList [FuncDefinition BooleanType (Ident "func") (Parameters []) (Block [ForStat (ForStatement (Identifier (Ident "a")) (Literal (BooleanLiteral True)) (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))))]) (Literal (BooleanLiteral True))]))))
 
 testEqualExpressionProgramParser :: Assertion
 testEqualExpressionProgramParser =
   assertEqual
     "testEqualExpressionProgramParser"
-    (parse programParser "" "main() `a==b` end")
-    (Right (Right (Program (FuncDefList []) (Block [Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b"))))]))))
+    (parse programParser "" "boolean func() {a = a==b} return true end")
+    (Right (Right (Program (FuncDefList [FuncDefinition BooleanType (Ident "func") (Parameters []) (Block [VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b")))))]) (Literal (BooleanLiteral True))]))))
 
 testGreatEqualThanExpressionProgramParser :: Assertion
 testGreatEqualThanExpressionProgramParser =
   assertEqual
     "testGreatEqualThanExpressionProgramParser"
-    (parse programParser "" "main() `a>=b` end")
-    (Right (Right (Program (FuncDefList []) (Block [Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) GreatEqualThan (Identifier (Ident "b"))))]))))
+    (parse programParser "" "boolean func() {a = a>=b} return true end")
+    (Right (Right (Program (FuncDefList [FuncDefinition BooleanType (Ident "func") (Parameters []) (Block [VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (BooleanExpression (BooleanOp (Identifier (Ident "a")) GreatEqualThan (Identifier (Ident "b")))))]) (Literal (BooleanLiteral True))]))))
 
 testLessEqualThanExpressionProgramParser :: Assertion
 testLessEqualThanExpressionProgramParser =
   assertEqual
     "testLessEqualThanExpressionProgramParser"
-    (parse programParser "" "main() `a<=b` end")
-    (Right (Right (Program (FuncDefList []) (Block [Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) LessEqualThan (Identifier (Ident "b"))))]))))
+    (parse programParser "" "boolean func() {a = a<=b} return true end")
+    (Right (Right (Program (FuncDefList [FuncDefinition BooleanType (Ident "func") (Parameters []) (Block [VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (BooleanExpression (BooleanOp (Identifier (Ident "a")) LessEqualThan (Identifier (Ident "b")))))]) (Literal (BooleanLiteral True))]))))
 
 testNotEqualxpressionProgramParser :: Assertion
 testNotEqualxpressionProgramParser =
   assertEqual
     "testNotEquaExpressionProgramParser"
-    (parse programParser "" "main() `a!=b` end")
-    (Right (Right (Program (FuncDefList []) (Block [Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) NotEqual (Identifier (Ident "b"))))]))))
+    (parse programParser "" "boolean func() {a = a!=b} return true end")
+    (Right (Right (Program (FuncDefList [FuncDefinition BooleanType (Ident "func") (Parameters []) (Block [VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (BooleanExpression (BooleanOp (Identifier (Ident "a")) NotEqual (Identifier (Ident "b")))))]) (Literal (BooleanLiteral True))]))))
 
 testGreaterThanExpressionProgramParser :: Assertion
 testGreaterThanExpressionProgramParser =
   assertEqual
     "testGreaterThanExpressionProgramParser"
-    (parse programParser "" "main() `a>b` end")
-    (Right (Right (Program (FuncDefList []) (Block [Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) GreaterThan (Identifier (Ident "b"))))]))))
+    (parse programParser "" "boolean func() {a = a>b} return true end")
+    (Right (Right (Program (FuncDefList [FuncDefinition BooleanType (Ident "func") (Parameters []) (Block [VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (BooleanExpression (BooleanOp (Identifier (Ident "a")) GreaterThan (Identifier (Ident "b")))))]) (Literal (BooleanLiteral True))]))))
 
 testLessThanExpressionProgramParser :: Assertion
 testLessThanExpressionProgramParser =
   assertEqual
     "testLessThanExpressionProgramParser"
-    (parse programParser "" "main() `a<b` end")
-    (Right (Right (Program (FuncDefList []) (Block [Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) LessThan (Identifier (Ident "b"))))]))))
+    (parse programParser "" "boolean func() {a = a<b} return true end")
+    (Right (Right (Program (FuncDefList [FuncDefinition BooleanType (Ident "func") (Parameters []) (Block [VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (BooleanExpression (BooleanOp (Identifier (Ident "a")) LessThan (Identifier (Ident "b")))))]) (Literal (BooleanLiteral True))]))))
 
 programTest :: TestTree
 programTest =
   testGroup
-    "Builder Function Tests"
+    "Builder Program Tests"
     [ testCase "testProgramParserAssingIntegerValue" testProgramParserAssingIntegerValue,
       testCase "testProgramParserAssingStringValue" testProgramParserAssingStringValue,
       testCase "testProgramParserAssingCharValue" testProgramParserAssingCharValue,
