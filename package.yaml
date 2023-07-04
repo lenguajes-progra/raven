@@ -37,6 +37,7 @@ library:
   source-dirs: 
     - src
     - src/parsers
+    - src/writers
   dependencies:
     - parsec
 
