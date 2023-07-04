@@ -9,12 +9,22 @@ import FunctionTest
 import PrintStatementTest
 import ProgramTest
 import StatementTest
+import ArrayTemplateTest
+import CommentTemplateTest
+import ExpressionTemplateTest
+import FunctionTemplateTest
+import PrintStatementTemplateTest
 
 main :: IO ()
 main = defaultMain test
 
 test :: TestTree
 test = testGroup "Builder Tests" [
+    ArrayTemplateTest.arrayTemplateTest,
+    PrintStatementTemplateTest.printStatementTemplateTest,
+    CommentTemplateTest.commentTemplateTest,
+    ExpressionTemplateTest.expressionTemplateTest,
+    FunctionTemplateTest.functionTemplateTest,
     CommentTest.commentTests,
     ErrorTest.errorTests,
     LiteralTest.literalTests,
