@@ -1,2 +1,2 @@
-int hello(int a, int b) {int ab= 2; int result; for (a; true) {a==b} end} return ab end
-boolean hello2() {boolean b = true} return true end
+int func(int a) {} return a end
+boolean main() {c = func(2)} return true end

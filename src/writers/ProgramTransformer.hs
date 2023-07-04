@@ -6,8 +6,10 @@ import Program
 import Text.Parsec
 
 programTransformer :: Program -> String
-programTransformer (Program (FuncDefList fdl)) = "module Output where\nimport Data.Bits\n\n" ++
-  concatMap functionDefinitionTransformer fdl
+programTransformer (Program (FuncDefList fdl)) =
+  "module Output where\nimport Data.Bits\n\n"
+    ++ concatMap (`functionDefinitionTransformer` fdl) fdl
+programTransformer _ = ""
 
 textWriter :: IO ()
 textWriter = do
@@ -15,6 +17,7 @@ textWriter = do
   ( case parse programParser "../resources/input.rav" fileText of
       Right r -> case r of
         Right r' -> do
+          print r'
           let code = programTransformer r'
           putStrLn code
           writeFile "../resources/Output.hs" code

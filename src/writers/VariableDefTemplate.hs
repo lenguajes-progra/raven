@@ -1,12 +1,12 @@
 module VariableDefTemplate where
 
-import Grammar
 import DataTransformer
-import LiteralTypeTemplate
 import ExpressionTemplate
+import Grammar
+import LiteralTypeTemplate
 
 variableDefinitionTemplate :: String -> String -> String -> String
-variableDefinitionTemplate typ identifier expression = identifier ++ " :: " ++ typ ++ "\n" ++ identifier ++ " = " ++ expression
+variableDefinitionTemplate typ identifier expression = identifier ++ " :: " ++ typ ++ "\n" ++ identifier ++ " = " ++ expression ++ "\n"
 
 variableBodyTemplate :: String -> String -> String
 variableBodyTemplate identifier expression = identifier ++ " = " ++ expression
@@ -20,9 +20,8 @@ variableDefBlockTemplate identifier expression = "\twhere " ++ identifier ++ " =
 variableExpressionTemplate :: String -> String
 variableExpressionTemplate expression = expression
 
-variableDefinitionTransformer :: VariableDefinition -> VariableType
-variableDefinitionTransformer (VariableDefinitionComplete typ identifier expression) = TriNode (typeTransformer typ) (identifierTransformer identifier) (expressionTransformer expression)
-variableDefinitionTransformer (VariableDefinitionWithoutAssignment typ identifier) = TwiceNodeWithoutAssignment (typeTransformer typ) (identifierTransformer identifier)
-variableDefinitionTransformer (VariableDefinitionWithAssignment identifier expression) = TwiceNodeWithAssignment (identifierTransformer identifier) (expressionTransformer expression)
-variableDefinitionTransformer _ = undefined
-
+variableDefinitionTransformer :: VariableDefinition -> [FunctionDefinition] -> VariableType
+variableDefinitionTransformer (VariableDefinitionComplete typ identifier expression) fd = TriNode (typeTransformer typ) (identifierTransformer identifier) (expressionTransformer expression fd)
+variableDefinitionTransformer (VariableDefinitionWithoutAssignment typ identifier) _ = TwiceNodeWithoutAssignment (typeTransformer typ) (identifierTransformer identifier)
+variableDefinitionTransformer (VariableDefinitionWithAssignment identifier expression) fd = TwiceNodeWithAssignment (identifierTransformer identifier) (expressionTransformer expression fd)
+variableDefinitionTransformer _ _ = undefined
