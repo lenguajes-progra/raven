@@ -38,7 +38,7 @@ test = testGroup "Builder Tests" [
     PrintStatementTest.printStatementTest,
     ProgramTest.programTest,
     StatementTest.statementTests,
-    -- FunctionTest.functionTests
+    FunctionTest.functionTests,
     LoopTemplateTest.loopTemplateTests,
     LiteralTemplateTest.literalTemplateTests,
     ProgramTemplateTest.programTransformerTests,

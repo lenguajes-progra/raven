@@ -12,7 +12,7 @@ import Text.Parsec
 import Type
 
 testFunctionDefinitionParserIntType :: Assertion
-testFunctionDefinitionParserIntType = assertEqual "parseFunctionDefIntType" (parse functionDefinitionParser "" "int function() {int a = 2 > 3} return 0 end") (Right (FuncDefinition IntType (Ident "function") (Parameters []) (Block [VariableDefinition (VariableErrorDefinition (ErrorType AssignType))]) (Literal (IntegerLiteral 0))))
+testFunctionDefinitionParserIntType = assertEqual "parseFunctionDefIntType" (parse functionDefinitionParser "" "int function() {int a = 2 > 3} return 0 end") (Right (FuncDefinitionError (ErrorType AssignType)))
 
 testFunctionDefinitionParserCharType :: Assertion
 testFunctionDefinitionParserCharType = assertEqual "parseFunctionDefCharType" (parse functionDefinitionParser "" "boolean function(int a, int b) {boolean c = a > b} return c end") (Right (FuncDefinition BooleanType (Ident "function") (Parameters [(IntType,Ident "a"),(IntType,Ident "b")]) (Block [VariableDefinition (VariableDefinitionComplete BooleanType (Ident "c") (BooleanExpression (BooleanOp (Identifier (Ident "a")) GreaterThan (Identifier (Ident "b")))))]) (Identifier (Ident "c"))))

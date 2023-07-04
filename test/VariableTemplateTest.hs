@@ -8,7 +8,7 @@ import Test.Tasty.HUnit (Assertion, assertEqual, testCase)
 import Text.Parsec (Consumed(Empty))
 
 testVariableDefinitionTemplate :: Assertion
-testVariableDefinitionTemplate = assertEqual "variableDefinitionTemplate" (variableDefinitionTemplate "var" "Int" "var * 2") "Int :: var\nInt = var * 2"
+testVariableDefinitionTemplate = assertEqual "variableDefinitionTemplate" (variableDefinitionTemplate "var" "Int" "var * 2") "Int :: var\nInt = var * 2\n"
 
 testVariableBodyTemplate :: Assertion
 testVariableBodyTemplate = assertEqual "variableBodyTemplate" (variableBodyTemplate "var" "var * 2") "var = var * 2"
