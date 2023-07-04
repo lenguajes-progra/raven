@@ -37,23 +37,11 @@ library
       Program
       Statement
       Type
-      ArrayDefinitionTemplate
-      CommentTemplate
-      DataTransformer
-      ExpressionTemplate
-      FunctionDefinitionTemplate
-      LiteralTypeTemplate
-      LoopTemplate
-      PrintStatementTemplate
-      ProgramTransformer
-      StatementTransformer
-      VariableDefTemplate
   other-modules:
       Paths_raven
   hs-source-dirs:
       src
       src/parsers
-      src/writers
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
@@ -77,16 +65,15 @@ test-suite raven-test
   type: exitcode-stdio-1.0
   main-is: MainTest.hs
   other-modules:
-      ArrayTemplateTest
-      CommentTemplateTest
       CommentTest
       ErrorTest
-      ExpressionTemplateTest
       ExpressionTest
-      FunctionTemplateTest
       FunctionTest
       LiteralTest
-      PrintStatementTemplateTest
+      PrintStatementTest
+      ProgramTest
+      StatementTest
+      TypeTest
       Paths_raven
   hs-source-dirs:
       test
