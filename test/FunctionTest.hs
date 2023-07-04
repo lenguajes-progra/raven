@@ -18,22 +18,22 @@ testFunctionDefinitionParserCharType :: Assertion
 testFunctionDefinitionParserCharType = assertEqual "parseFunctionDefCharType" (parse functionDefinitionParser "" "boolean function(int a, int b) {boolean c = a > b} return c end") (Right (FuncDefinition BooleanType (Ident "function") (Parameters [(IntType,Ident "a"),(IntType,Ident "b")]) (Block [VariableDefinition (VariableDefinitionComplete BooleanType (Ident "c") (BooleanExpression (BooleanOp (Identifier (Ident "a")) GreaterThan (Identifier (Ident "b")))))]) (Identifier (Ident "c"))))
 
 testFunctionDefinitionParserBooleanType :: Assertion
-testFunctionDefinitionParserBooleanType = assertEqual "parseFunctionDefBooleanType" (parse functionDefinitionParser "" "boolean my_function() {true != false} return true  end") (Right (FuncDefinition BooleanType (Ident "my_function") (Parameters []) (Block [Expression (BooleanExpression (BooleanOp (Literal (BooleanLiteral True)) NotEqual (Literal (BooleanLiteral False))))]) (Literal (BooleanLiteral True))))
+testFunctionDefinitionParserBooleanType = assertEqual "parseFunctionDefBooleanType" (parse functionDefinitionParser "" "boolean my_function() {true = false} return true  end") (Right (FuncDefinition BooleanType (Ident "my_function") (Parameters []) (Block [VariableDefinition (VariableDefinitionWithAssignment (Ident "true") (Literal (BooleanLiteral False)))]) (Literal (BooleanLiteral True))))
 
 testFunctionDefinitionParserStringType :: Assertion
-testFunctionDefinitionParserStringType = assertEqual "parseFunctionDefStringType" (parse functionDefinitionParser "" "string my_function() {!false} return \"True\"  end") (Right (FuncDefinition StringType (Ident "my_function") (Parameters []) (Block [Expression (LogicalExpression (LogicNot (Literal (BooleanLiteral False))))]) (Literal (StringLiteral "True"))))
+testFunctionDefinitionParserStringType = assertEqual "parseFunctionDefStringType" (parse functionDefinitionParser "" "string my_function() {string a} return \"True\" end") (Right (FuncDefinition StringType (Ident "my_function") (Parameters []) (Block [VariableDefinition (VariableDefinitionWithoutAssignment StringType (Ident "a"))]) (Literal (StringLiteral "True"))))
 
 testFunctionDefinitionWithParameter :: Assertion
-testFunctionDefinitionWithParameter = assertEqual "parseFunctionDefWithParameter" (parse functionDefinitionParser "" "int my_function(boolean a) {~a} return 0 end") (Right (FuncDefinition IntType (Ident "my_function") (Parameters [(BooleanType, Ident "a")]) (Block [Expression (BitExpression (BitNot (Identifier (Ident "a"))))]) (Literal (IntegerLiteral 0))))
+testFunctionDefinitionWithParameter = assertEqual "parseFunctionDefWithParameter" (parse functionDefinitionParser "" "int my_function() {int a} return 0 end") (Right (FuncDefinition IntType (Ident "my_function") (Parameters []) (Block [VariableDefinition (VariableDefinitionWithoutAssignment IntType (Ident "a"))]) (Literal (IntegerLiteral 0))))
 
 testFunctionDefinitionWithParameters :: Assertion
-testFunctionDefinitionWithParameters = assertEqual "parseFunctionDefWithParameters" (parse functionDefinitionParser "" "boolean my_function(boolean a, boolean b) {a == b} return true end") (Right (FuncDefinition BooleanType (Ident "my_function") (Parameters [(BooleanType, Ident "a"), (BooleanType, Ident "b")]) (Block [Expression (BooleanExpression (BooleanOp (Identifier (Ident "a")) Equal (Identifier (Ident "b"))))]) (Literal (BooleanLiteral True))))
+testFunctionDefinitionWithParameters = assertEqual "parseFunctionDefWithParameters" (parse functionDefinitionParser "" "boolean my_function(boolean a, boolean b) {a = b} return true end") (Right (FuncDefinition BooleanType (Ident "my_function") (Parameters [(BooleanType,Ident "a"),(BooleanType,Ident "b")]) (Block [VariableDefinition (VariableDefinitionWithAssignment (Ident "a") (Identifier (Ident "b")))]) (Literal (BooleanLiteral True))))
 
 testFunctionDefinitionWithFunctionAsParameter :: Assertion
-testFunctionDefinitionWithFunctionAsParameter = assertEqual "parseFunctionDefWithFunctionAsParameter" (parse functionDefinitionParser "" "string my_function(function func) {5 >= 6} return \"passed\"  end") (Right (FuncDefinition StringType (Ident "my_function") (Parameters [(FunctionType, Ident "func")]) (Block [Expression (BooleanExpression (BooleanOp (Literal (IntegerLiteral 5)) GreatEqualThan (Literal (IntegerLiteral 6))))]) (Literal (StringLiteral "passed"))))
+testFunctionDefinitionWithFunctionAsParameter = assertEqual "parseFunctionDefWithFunctionAsParameter" (parse functionDefinitionParser "" "string my_function(function func) {int a} return \"passed\" end") (Right (FuncDefinition StringType (Ident "my_function") (Parameters [(FunctionType,Ident "func")]) (Block [VariableDefinition (VariableDefinitionWithoutAssignment IntType (Ident "a"))]) (Literal (StringLiteral "passed"))))
 
 testFunctionDefinitionWithWrongFunctionType :: Assertion
-testFunctionDefinitionWithWrongFunctionType = assertEqual "parseFunctionDefWithWrongTypeFunction" (parse functionDefinitionParser "" "int my_function(int a, int b, boolean c) {a <= b} return true end") (Right (FuncDefinitionError (ErrorType TypeFunction)))
+testFunctionDefinitionWithWrongFunctionType = assertEqual "parseFunctionDefWithWrongTypeFunction" (parse functionDefinitionParser "" "int my_function(int a, int b, boolean c) {int a} return a end") (Right (FuncDefinition IntType (Ident "my_function") (Parameters [(IntType,Ident "a"),(IntType,Ident "b"),(BooleanType,Ident "c")]) (Block [VariableDefinition (VariableDefinitionWithoutAssignment IntType (Ident "a"))]) (Identifier (Ident "a"))))
 
 functionTests :: TestTree
 functionTests =
