@@ -6,6 +6,8 @@ boolean func3 (int c) {int a = a | 4; boolean b = 4 >= c; boolean z =  true && f
 
 boolean function(int a, int b) {boolean c = a > b; boolean d = 2>=3} return c end
 
+int forFunction(int a, int b) {int ab; for (a;a>3) {a>>b} end} return ab end
+
 string ifFunction (int a, int b) {string result; if(a > b) {result = "mayor"} else {result = "menor"} end} return result end
 
 int apply() {} return 3 end
